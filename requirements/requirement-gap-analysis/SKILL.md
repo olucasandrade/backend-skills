@@ -15,21 +15,13 @@ itself claims to cover); this skill has no proposal to judge at all — it
 asks category-based questions the input document doesn't even attempt to
 answer, because it isn't structured as a design doc yet.
 
-**No deterministic pre-pass script** — the first skill in this repo's
-`requirements/`/`design/` family with no script layer at all. `rfc-review`'s
-pre-pass earns its keep by parsing detectable RFC/ADR/PRFAQ template
-structure; this skill's input is unstructured by design, so there's no
-structure to extract. Judgment only, closer in spirit to
-`security-review`/`performance-review`'s posture than to `rfc-review`'s.
+No script layer — this skill is judgment only.
 
 ## Step 1 — Resolve the input
 
-Accept a file path or pasted text only — same as `rfc-review`, and for
-the same reason: don't attempt to fetch external doc-platform URLs (Google
-Docs/Notion/Confluence links return login walls or unusable JS shells to
-a fetch tool); ask for pasted content or an export instead.
-
-If nothing is given, ask what to analyze.
+Accept a file path or pasted text only — don't fetch external doc-platform
+URLs (they return login walls); ask for pasted content or an export
+instead. If nothing is given, ask what to analyze.
 
 **No template expected.** Don't penalize the input for lacking RFC-style
 structure — bullet points, a paragraph, a transcript excerpt, and a
@@ -108,15 +100,12 @@ its own Completeness dimension which flagged gaps got addressed in the
 RFC and which didn't — same explicit sibling-check convention as the rest
 of the pipeline, not a hard dependency.
 
-## Things to not do
+## Rules
 
 - Don't apply this skill to a doc that already proposes a solution — flag
   it and point to `rfc-review` instead.
 - Don't invent compliance/regulatory concerns with no basis in the
   input's actual domain.
-- Don't penalize the input for lacking RFC-style structure — that's not
-  what this skill is checking.
 - Don't attach a confidence score to findings — a gap is a gap by
   construction.
 - Don't invent an overall approve/reject verdict.
-- Don't attempt to fetch external doc-platform URLs.

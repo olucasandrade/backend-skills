@@ -6,16 +6,10 @@ description: Review an existing codebase's architecture for structural health �
 # architecture-review
 
 Reviews an entire codebase (v1 scope — not a diff or PR review) for
-structural health, not code correctness or security/performance. Sibling
-to `implementation/security-review` and `implementation/performance-review`
-— same shape (real code as input, no proposal/doc to judge), reusing the
-same shared file-enumeration script, but a distinct lens.
+structural health, not code correctness or security/performance.
 
-**Dependency:** uses `scripts/scan.py` (stdlib-only Python 3), which
-depends on `../_shared/file_enum.py` (same module `security-review` and
-`performance-review` use — this is the third consumer). If you copy this
-skill folder standalone, copy `scripts/` and `implementation/_shared/`
-alongside it.
+**Requires:** `scripts/scan.py` and `implementation/_shared/file_enum.py`
+(stdlib-only Python 3). `install.sh` places these automatically.
 
 ## Step 1 — Resolve the input
 
@@ -116,7 +110,7 @@ vs. which didn't). No single approve/reject verdict for a whole codebase
 
 Every invocation is a fresh review — no revision tracking in v1.
 
-## Things to not do
+## Rules
 
 - Don't invent an expected architecture pattern the codebase never
   declared.
@@ -128,4 +122,3 @@ Every invocation is a fresh review — no revision tracking in v1.
   them if the user explicitly points you at one.
 - Don't drop findings for low confidence — flag with a false-positive
   note instead.
-- Don't invent an overall approve/reject verdict for the codebase.

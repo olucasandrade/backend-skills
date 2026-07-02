@@ -14,9 +14,8 @@ concrete detail to be mechanically turned into a schema/API spec.
 This skill does its own gap-analysis internally; it does not delegate to
 `requirement-gap-analysis`, which is scoped to pre-solution input, not RFCs.
 
-**Dependency:** uses the deterministic pre-pass script at
-`scripts/doc_prepass.py` (stdlib-only Python 3). If you copy this skill
-folder standalone, copy `scripts/` alongside it.
+**Requires:** `scripts/doc_prepass.py` (stdlib-only Python 3). `install.sh`
+places these automatically.
 
 ## Step 1 — Resolve the input
 
@@ -97,11 +96,9 @@ piped/pasted), and show it inline — both, not one or the other.
 Every invocation is treated as a fresh review — this skill does not track
 prior reviews or diff against earlier versions of the same doc in v1.
 
-## Things to not do
+## Rules
 
 - Don't force the RFC-review lens onto a document that clearly isn't a proposal without checking with the user first.
 - Don't relay `vague_language_candidates` as findings verbatim — judge each one in context; many will be non-issues.
 - Don't claim a codebase-grounded finding is "verified" unless you actually found concrete supporting/contradicting evidence.
 - Don't silently skip image/diagram references — always disclose that they weren't analyzed.
-- Don't attempt to fetch external doc-platform URLs — ask for pasted content or a file instead.
-- Don't apply a fixed tone regardless of the document's own voice.

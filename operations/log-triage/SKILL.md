@@ -10,9 +10,8 @@ No questions asked — point it at logs, get a report back. For a version that
 asks clarifying questions first when the input is ambiguous, use
 `log-triage-interactive` instead.
 
-**Dependency:** this skill uses the shared engine at
-`../_shared/log-triage-core/triage.py` (stdlib-only Python 3). If you copy
-this skill folder standalone, also copy `_shared/log-triage-core/`.
+**Requires:** `../_shared/log-triage-core/triage.py` (stdlib-only Python 3).
+`install.sh` places this automatically.
 
 ## When to use this
 
@@ -85,9 +84,8 @@ Write the full report to a file named `TRIAGE_REPORT.md` next to the input
 command), **and** show it inline in your response — both, not one or the
 other.
 
-## Things to not do
+## Rules
 
 - Don't claim a correlation is causal. "Possible trigger", never "caused by", unless you have direct evidence (e.g., the exact same request ID appears in both).
-- Don't disable redaction unless explicitly asked, and say so when you do.
 - Don't silently drop the truncation/omission disclosures — the user needs to know what wasn't analyzed.
 - Don't re-implement clustering/masking in your own head from the raw log dump — always run the script first and reason from its output.

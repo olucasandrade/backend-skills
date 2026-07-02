@@ -5,20 +5,14 @@ description: Generate human-readable API reference documentation (Markdown) from
 
 # api-docs
 
-Generates a single Markdown API reference document. Closer in spirit to
-`design/rfc-to-schema`/`design/rfc-to-api` (render + narrate) than to its
-`implementation/` siblings `security-review`/`performance-review` (which
-read arbitrary source with no structured IR to lean on) — this skill's
-primary path renders from an already-produced contract, and only falls
-back to reading source code when no structured contract exists at all.
+Generates a single Markdown API reference document. This skill's primary
+path renders from an already-produced contract, and only falls back to
+reading source code when no structured contract exists at all.
 
-**Dependency:** uses `scripts/render_docs.py` (stdlib-only Python 3),
-which depends on the shared `design/_shared/rest_path.py` and
-`design/_shared/naming.py` modules — the same REST path/verb derivation
-`rfc-to-api`'s OpenAPI renderer uses, so the docs never disagree with the
-spec on a method/path. If you copy this skill folder standalone, copy
-`scripts/`, `design/_shared/rest_path.py`, and `design/_shared/naming.py`
-alongside it.
+**Requires:** `scripts/render_docs.py`, `design/_shared/rest_path.py`, and
+`design/_shared/naming.py` (stdlib-only Python 3) — the same REST path/verb
+derivation `rfc-to-api`'s OpenAPI renderer uses, so the docs never disagree
+with the spec on a method/path. `install.sh` places these automatically.
 
 ## Step 1 — Resolve the input, in priority order
 
@@ -108,12 +102,10 @@ every placeholder filled) is the final artifact directly.
 
 Every invocation is treated as a fresh render — no staleness/drift check
 against a previously-generated doc, and no diff against a prior run of
-this same IR, in v1. (Implementation-vs-IR drift is `security-review`'s
-and `performance-review`'s territory, not this skill's — see their
-"RFC/implementation drift" sections; duplicating that check here would
-just be the same work done twice.)
+this same IR, in v1. Implementation-vs-IR drift checks are
+`security-review`'s/`performance-review`'s job, not this skill's.
 
-## Things to not do
+## Rules
 
 - Don't leave any `<DESCRIPTION:...>`/`<EXAMPLE:...>` placeholder unfilled
   in the final doc.
@@ -123,7 +115,5 @@ just be the same work done twice.)
   always mark it `_(example)_`.
 - Don't reverse-engineer a contract from source code if an IR or spec file
   is available — that's the last-resort path, not a default.
-- Don't attempt an implementation-drift check — that's
-  `security-review`'s/`performance-review`'s job, not this skill's.
 - Don't reorder operations by name/category — preserve the source's own
   ordering.

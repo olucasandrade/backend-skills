@@ -15,11 +15,9 @@ narrative causality, and fills in everything logs alone can never answer
 (user impact, whether a fix was real or just a mitigation, action items)
 through an interview.
 
-**Dependency:** reuses the shared engine at
-`../_shared/log-triage-core/triage.py` (stdlib-only Python 3) for raw-log
-parsing/clustering/timestamp extraction when logs are given — no
-reparsing logic of its own. If you copy this skill folder standalone,
-also copy `operations/_shared/log-triage-core/`.
+**Requires:** `../_shared/log-triage-core/triage.py` (stdlib-only Python 3)
+for raw-log parsing/clustering/timestamp extraction when logs are given.
+`install.sh` places this automatically.
 
 ## Step 1 — Resolve the input(s)
 
@@ -50,9 +48,8 @@ before asking about them again.
 
 ## Step 3 — Interview, one question at a time
 
-Ask **one question at a time** (same convention as `/grill-me` and
-`log-triage-interactive`'s clarification pass), each grounded in what's
-already known rather than generic — e.g. "logs show the error rate spiked
+Ask **one question at a time**, each grounded in what's already known
+rather than generic — e.g. "logs show the error rate spiked
 at 14:02 — is that when the incident actually started, or was there
 user-facing impact before it became visible in logs?" rather than "tell
 me about the incident." Work through what Step 2's grounding couldn't
@@ -82,9 +79,7 @@ If the user explicitly points at a `SECURITY_REVIEW.md` or
 `ARCHITECTURE_REVIEW.md` finding that turned into this incident,
 reference it directly as root-cause grounding instead of re-deriving the
 same analysis. **Explicit-pointer-only — never search the repo for
-these**, same convention as the `implementation/` skills. No connection
-to `rfc-review`'s rollback section — that's not a concrete enough link to
-be worth forcing.
+these**, same convention as the `implementation/` skills.
 
 ## Step 5 — Assemble the report
 
@@ -112,14 +107,12 @@ and show it inline — both. Structure, in this order:
 Every invocation is a fresh reconstruction — this skill does not track
 prior incident summaries or diff against an earlier draft in v1.
 
-## Things to not do
+## Rules
 
 - Don't require logs — work from human notes/Slack excerpts alone if
   that's all that's available.
 - Don't infer severity/blast-radius purely from log severity scores — ask
   directly.
-- Don't conflate trigger and root cause.
-- Don't write up a mitigation as if it were a real fix.
 - Don't search the repo for `SECURITY_REVIEW.md`/`ARCHITECTURE_REVIEW.md`
   — only use one if the user explicitly points at it.
 - Don't ask generic open-ended questions when a grounded, specific one is

@@ -10,9 +10,8 @@ and post-report drill-down. Use this when the input looks ambiguous (large,
 multi-service, wide time range) or the user wants to investigate rather than
 just receive a report.
 
-**Dependency:** this skill uses the shared engine at
-`../_shared/log-triage-core/triage.py` (stdlib-only Python 3). If you copy
-this skill folder standalone, also copy `_shared/log-triage-core/`.
+**Requires:** `../_shared/log-triage-core/triage.py` (stdlib-only Python 3).
+`install.sh` places this automatically.
 
 **If you want a plain one-shot report with no questions asked, use
 `log-triage` instead** — that's the right choice when the input is already
@@ -77,10 +76,9 @@ a menu if they just ask something directly.
 - **Narrowing scope / re-triage**: if the user asks to filter by time window, service, or level, filter the already-loaded log text and re-run Step 3 on the subset — don't ask the script to do filtering itself.
 - Keep answering in this mode until the user is done; there's no fixed end state.
 
-## Things to not do
+## Rules
 
 - Don't ask clarifying questions when the input is already unambiguous — that's just friction, not "interactive."
 - Don't ask more than 3 clarifying questions before the first report.
 - Don't claim correlation is causation (same rule as `log-triage`).
-- Don't disable redaction unless explicitly asked.
 - Don't re-run the full script on the entire original input for every drill-down question if the user has already scoped down — work from the narrowed subset.

@@ -7,10 +7,7 @@ description: Review a codebase for security vulnerabilities — injection, broke
 
 Reviews an entire codebase (v1 scope — not a diff or PR review) for
 code-level security vulnerabilities, hardcoded secrets/credentials, and
-broken authentication/authorization logic. This is the first skill in this
-repo that reads actual source code rather than design docs or logs, and the
-first where the core value is LLM judgment rather than deterministic
-rendering — there's no neutral IR to generate here, just a careful read.
+broken authentication/authorization logic.
 
 **Out of scope for v1:** dependency/CVE scanning. That needs an
 up-to-date vulnerability database, which an LLM can't reliably reason about
@@ -19,12 +16,8 @@ served by existing tools (`npm audit`, `pip-audit`, `osv-scanner`, etc.).
 If the codebase has a lockfile, mention in the report that a dependency
 scan is a separate recommended step, but don't attempt to perform one.
 
-**Dependency:** uses the deterministic pre-pass script at
-`scripts/scan.py` (stdlib-only Python 3), which itself depends on the
-shared file-enumeration module at `../_shared/file_enum.py` (also used by
-`implementation/performance-review`). If you copy this skill folder
-standalone, copy both `scripts/` and `implementation/_shared/` alongside
-it.
+**Requires:** `scripts/scan.py` and `implementation/_shared/file_enum.py`
+(stdlib-only Python 3). `install.sh` places these automatically.
 
 ## Step 1 — Resolve the input
 
@@ -160,10 +153,8 @@ invent one. The severity summary is the top-line signal.
 Every invocation is treated as a fresh review — this skill does not track
 prior reviews or diff against an earlier scan of the same codebase in v1.
 
-## Things to not do
+## Rules
 
-- Don't perform or simulate dependency/CVE scanning — recommend an
-  external tool instead.
 - Don't search the repo for `api.ir.json`/`RFC_REVIEW.md` — only use them
   if the user explicitly points you at one.
 - Don't echo an unredacted secret value anywhere, even in an explanation —
@@ -172,4 +163,3 @@ prior reviews or diff against an earlier scan of the same codebase in v1.
   instead.
 - Don't report N near-duplicate findings for one systemic pattern — merge
   into one finding listing every affected location.
-- Don't invent an overall approve/reject verdict for the codebase.

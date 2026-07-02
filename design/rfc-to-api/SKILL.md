@@ -16,11 +16,8 @@ split as `rfc-to-schema`:
    that IR into OpenAPI 3.1 (as JSON — no YAML; this repo stays stdlib-only)
    and/or GraphQL SDL. Reproducible, unit-tested.
 
-**Dependencies:** `scripts/render_api.py` (stdlib-only Python 3), which
-imports `design/_shared/naming.py` (shared with `rfc-to-schema` — the first
-real cross-skill extraction in this repo, done once a second consumer
-actually needed the same logic, not before). If you copy this skill folder
-standalone, copy both `scripts/` and `../_shared/`.
+**Requires:** `scripts/render_api.py` and `design/_shared/naming.py`
+(stdlib-only Python 3). `install.sh` places these automatically.
 
 ## Step 1 — Resolve the input
 
@@ -60,28 +57,19 @@ existing-schema check — not an exhaustive spec diff.
 
 ## Step 3 — Extract the IR
 
-Produce `api.ir.json`: a list of `operations`, each with `name` (camelCase,
-protocol-agnostic — never a URL path), `entity` (**set this whenever the
-operation targets a specific entity** — required for reliable REST path
-derivation on `read`/`update`/`delete`/`action` kinds, since those often
-carry no entity `ref` in their input/output fields at all; see
-`render_api.py`'s IR_SPEC docstring), `kind` (`create`/`read`/`list`/
-`update`/`delete`/`action` — a semantic category, not an HTTP verb, since
-GraphQL has no verb concept), `input`/`output` (structured fields, each
-scalar, `ref` to an entity, or nested `object`/`array`), `errors` (a hybrid
-vocabulary: base cases — `not_found`, `validation_failed`, `conflict`,
-`unauthorized`, `forbidden`, `rate_limited`, `internal_error` — map to fixed
-status codes automatically; domain-specific cases like
-`insufficient_credits` are fine and often more informative, but **require an
-explicit `status_hint`**, since the renderer has no way to guess one),
-`requires_auth`/`required_scopes` (populate scopes only when the RFC states
-them — never invent a role/scope system), `idempotent`, `paginated`/
-`pagination_style` (`cursor`/`offset`/`page_number` — cursor is the assumed
-default when the RFC says "list X" without specifying a strategy; flag it
-`assumed`), and optional `rest_override`/`graphql_override` for when the RFC
-explicitly states a routing/shape that doesn't match the mechanical
-derivation — used verbatim when present, never silently overridden by our
-own convention.
+Produce `api.ir.json`: a list of `operations`. The full field-by-field IR
+spec lives in the IR_SPEC docstring at the top of `scripts/render_api.py` —
+read it before writing the IR. The details that most often go wrong:
+- `name` is camelCase and protocol-agnostic — never a URL path.
+- Set `entity` whenever the operation targets a specific entity — REST path
+  derivation for `read`/`update`/`delete`/`action` kinds depends on it.
+- `kind` is a semantic category (`create`/`read`/`list`/`update`/`delete`/`action`),
+  not an HTTP verb.
+- Base error cases map to status codes automatically; domain-specific error
+  cases **require an explicit `status_hint`**.
+- Populate `required_scopes` only when the RFC states them — never invent a
+  role/scope system.
+- `rest_override`/`graphql_override` are used verbatim when present.
 
 **Handling gaps** — same discipline as `rfc-to-schema`: state it → use it;
 don't state it but a sensible default exists → fill it and flag `assumed:
@@ -144,11 +132,10 @@ Every run is independent — no revision-tracking in v1, consistent with
 - **`rfc-to-schema`**: optional informational input for entity `$ref`s (Step 1) — never required.
 - **`er-generator`**: unrelated to this skill's output; it consumes `rfc-to-schema`'s IR or a live DB, not this skill's API IR.
 
-## Things to not do
+## Rules
 
 - Don't force every operation's routing through the mechanical derivation when the RFC states something explicit — use the override fields.
 - Don't invent auth scopes/roles the RFC never mentions.
 - Don't let a domain-specific error case through without a `status_hint` — the renderer has nowhere sensible to fall back to.
-- Don't let a GraphQL `enum` field type reference go undeclared in the SDL — this is invalid GraphQL, not just an idiom nicety (a real bug caught during this skill's own testing).
+- Don't let a GraphQL `enum` field type reference go undeclared in the SDL — this is invalid GraphQL, not just an idiom nicety.
 - Don't collapse an inline (non-`$ref`) output shape into a bare `JSON` scalar when it has real fields — render a proper named type.
-- Don't attempt to fetch external doc-platform URLs.

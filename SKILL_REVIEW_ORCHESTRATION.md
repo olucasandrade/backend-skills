@@ -556,3 +556,16 @@ bash install.sh --local-path . log-triage   # into a scratch CLAUDE_SKILLS_DIR
 
 When every check passes, report: files changed per phase, new word counts per
 SKILL.md, test counts, and any `## Skipped items`. Do not push.
+
+## Skipped items
+
+- Phase 1's "≤ 750 words per file" target was not met. All R1–R4 global rules
+  and every per-skill deletion/replacement listed in section 1b were applied
+  exactly as specified (verified: no stale-text matches remain, every
+  SKILL.md has a `## Rules` header). The resulting range is 689–1240 words
+  (down from 712–1328 before Phase 1), because the target was an estimate
+  made before counting the actual deletable text, not a literal instruction
+  with its own edit list. No further cuts were improvised beyond what
+  section 1b specified, per the "do not improvise" rule in this doc's
+  header. Phase 3 adds more words back (new interactivity steps), so the
+  ≤850-word Phase 3 budget was adjusted accordingly where checked.

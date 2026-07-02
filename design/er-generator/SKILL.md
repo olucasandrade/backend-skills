@@ -19,11 +19,9 @@ unit-tested in `scripts/render_er.py`. Your job is mostly orchestration —
 picking a source, resolving ambiguity, running the right command safely —
 not extraction judgment.
 
-**Dependency:** `scripts/render_er.py` (stdlib-only Python 3, including
+**Requires:** `scripts/render_er.py` (stdlib-only Python 3, including
 `sqlite3` for live SQLite introspection). No shared `design/_shared/`
-dependency — each type-mapping table in this repo's renderers is genuinely
-different per target, so nothing here met the bar for extraction (see the
-`rfc-to-api`/`rfc-to-schema` grill notes on why `slugify` *did* meet it).
+dependency. `install.sh` places this automatically.
 
 ## Step 1 — Resolve the source (auto-detect priority)
 
@@ -113,10 +111,10 @@ entries from static SQL parsing.
 - **`rfc-to-api`**: no relationship — this skill diagrams data shape, not API operations.
 - Not tied to `rfc-review` or any RFC at all — this is a general-purpose diagramming tool.
 
-## Things to not do
+## Rules
 
 - Don't attempt a live Postgres/MySQL connection without the user explicitly providing connection details.
 - Don't silently mis-parse static SQL outside the documented `CREATE TABLE` subset — report what was skipped and why.
 - Don't fake-flatten `object`/`array` fields into pretend relational columns.
 - Don't present heuristic clustering as an authoritative domain split.
-- Don't render a diagram whose relationship lines reference entities that aren't actually declared in it (verify with `validate_mermaid()` if you touch the renderer — this exact class of bug was caught during this skill's own testing).
+- Don't render a diagram whose relationship lines reference entities that aren't actually declared in it (verify with `validate_mermaid()` if you touch the renderer).

@@ -15,10 +15,8 @@ skill, so every finding is inferred from reading code, never from measured
 latency/profiling data. Frame findings accordingly ("this pattern will
 degrade at scale," not "this takes 400ms").
 
-**Dependency:** uses the shared file-enumeration script at
-`../_shared/file_enum.py` (stdlib-only Python 3), the same module
-`security-review` uses. If you copy this skill folder standalone, copy
-`implementation/_shared/` alongside it.
+**Requires:** `scripts/scan.py` and `implementation/_shared/file_enum.py`
+(stdlib-only Python 3). `install.sh` places these automatically.
 
 ## Step 1 — Resolve the input
 
@@ -40,13 +38,9 @@ python3 <skill_dir>/scripts/scan.py --root PATH
 
 This returns JSON with `files` (the filtered reading list — vendor,
 binary, lockfile, and `.gitignore`-matched paths already excluded) and
-`skipped` (what was excluded and why). Unlike `security-review`'s
-pre-pass, there is **no content-analysis pass here** — no grep-heuristic
-for nested loops or ORM call sites. That was considered and rejected: a
-regex can't tell a 3-item config loop from an unbounded user-list loop,
-and "ORM call site" syntax varies too much across frameworks to add real
-signal — it would just train you (and the reader) to ignore noisy output.
-Read every file in `files` directly.
+`skipped` (what was excluded and why). There is deliberately **no
+content-analysis heuristic pass** — a regex can't tell a 3-item config
+loop from an unbounded one. Read every file in `files` directly.
 
 ## Step 3 — Read the code
 
@@ -149,7 +143,7 @@ summary is the top-line signal, same as `security-review`.
 Every invocation is treated as a fresh review — this skill does not
 track prior reviews or diff against an earlier scan in v1.
 
-## Things to not do
+## Rules
 
 - Don't claim measured latency/timing — every finding is inferred from
   reading code, not runtime data.
@@ -161,4 +155,3 @@ track prior reviews or diff against an earlier scan in v1.
   note instead.
 - Don't report N near-duplicate findings for one systemic pattern —
   merge into one finding listing every affected location.
-- Don't invent an overall approve/reject verdict for the codebase.

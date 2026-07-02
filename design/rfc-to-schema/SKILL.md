@@ -17,10 +17,8 @@ Two layers, deliberately separated:
    that IR into concrete target syntax (SQL DDL, JSON Schema). This is
    reproducible and is exactly what's unit-tested.
 
-**Dependencies:** `scripts/render_schema.py` (stdlib-only Python 3), which
-imports `design/_shared/naming.py` (shared with `rfc-to-api` — extracted
-once that second skill needed the identical pluralization logic). If you
-copy this skill folder standalone, copy both `scripts/` and `../_shared/`.
+**Requires:** `scripts/render_schema.py` and `design/_shared/naming.py`
+(stdlib-only Python 3). `install.sh` places these automatically.
 
 ## Step 1 — Resolve the input
 
@@ -65,14 +63,9 @@ This informs two things:
 
 Read the RFC and produce `schema.ir.json`. The IR is a neutral,
 renderer-agnostic representation — no target-specific syntax (no
-`VARCHAR(255)`, no Prisma types) — using abstract types: `uuid`, `string`
-(with optional `max_length`), `text`, `int`, `bigint`, `float`, `decimal`,
-`bool`, `datetime`, `date`, `json`, `enum` (with `values`), `object` (with
-nested `fields`), `array` (with `item_type`, and nested `fields` if the item
-type is `object`), and `ref` (a relationship to another entity, with
-`cardinality`). Many-to-many relationships are top-level `relationships`
-entries (they need a join table, which isn't a single field). See the full
-IR spec documented at the top of `scripts/render_schema.py`.
+`VARCHAR(255)`, no Prisma types) — using the abstract type system documented
+in the IR spec at the top of `scripts/render_schema.py`; read that docstring
+before writing the IR.
 
 **Handling gaps in the RFC** — RFCs are usually light on DB-level detail.
 For each field/decision:
@@ -157,10 +150,9 @@ against a previous `schema.ir.json` version in v1.
   present next to its input, to ground request/response bodies in real
   entities — but doesn't require it (plenty of APIs don't need new storage).
 
-## Things to not do
+## Rules
 
 - Don't bake target-specific syntax into the IR — it must stay renderer-agnostic.
 - Don't let an assumed/inferred detail look as certain as something the RFC actually stated — always flag it, in both the IR and every rendered output.
 - Don't silently generate a schema that conflicts with an existing entity of the same name — flag it.
 - Don't hand-patch renderer output for a one-off case instead of fixing the IR or the renderer script; the renderer's whole value is being deterministic and tested.
-- Don't attempt to fetch external doc-platform URLs.
