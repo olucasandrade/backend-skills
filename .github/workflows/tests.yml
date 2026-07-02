@@ -1,0 +1,152 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - name: log-triage-core
+            dir: operations/_shared/log-triage-core
+          - name: rfc-review
+            dir: requirements/rfc-review/scripts
+          - name: rfc-to-schema
+            dir: design/rfc-to-schema/scripts
+          - name: rfc-to-api
+            dir: design/rfc-to-api/scripts
+          - name: er-generator
+            dir: design/er-generator/scripts
+          - name: implementation-shared
+            dir: implementation/_shared
+          - name: security-review
+            dir: implementation/security-review/scripts
+          - name: performance-review
+            dir: implementation/performance-review/scripts
+          - name: architecture-review
+            dir: implementation/architecture-review/scripts
+          - name: api-docs
+            dir: implementation/api-docs/scripts
+    name: ${{ matrix.suite.name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run ${{ matrix.suite.name }} tests
+        working-directory: ${{ matrix.suite.dir }}
+        run: python3 -m unittest discover -s tests -v
+
+  no-pip-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify no requirements.txt / pyproject.toml / package.json anywhere
+        run: |
+          if find . -type f \( -name "requirements.txt" -o -name "pyproject.toml" -o -name "package.json" \) | grep -q .; then
+            echo "Found a dependency manifest — this repo is stdlib-only by design. See README.md."
+            find . -type f \( -name "requirements.txt" -o -name "pyproject.toml" -o -name "package.json" \)
+            exit 1
+          fi
+
+  manifest-consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Every MANIFEST.json path must exist on disk
+        run: |
+          python3 -c "
+          import json, os, sys
+
+          with open('MANIFEST.json') as f:
+              data = json.load(f)
+
+          missing = []
+          for name, entry in data['skills'].items():
+              paths = [entry['path']] + entry.get('shared', [])
+              for p in paths:
+                  if not os.path.isdir(p):
+                      missing.append(f'{name}: {p}')
+
+          if missing:
+              print('MANIFEST.json references paths that do not exist:')
+              for m in missing:
+                  print(f'  {m}')
+              sys.exit(1)
+          print(f\"OK: all paths for {len(data['skills'])} skills exist.\")
+          "
+
+  install-script:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - name: no-shared-dep
+            args: rfc-review
+            expect_dirs: rfc-review
+          - name: nested-shared-dep
+            args: log-triage
+            expect_dirs: "log-triage _shared/log-triage-core"
+          - name: merged-shared-dep
+            args: api-docs
+            expect_dirs: "api-docs _shared"
+          - name: category
+            args: --category operations
+            expect_dirs: "log-triage log-triage-interactive incident-summary _shared"
+          - name: all
+            args: --all
+    name: install.sh (${{ matrix.scenario.name }})
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install against this checkout (no network)
+        run: |
+          export CLAUDE_SKILLS_DIR="$RUNNER_TEMP/claude-skills"
+          bash install.sh --local-path . ${{ matrix.scenario.args }}
+          echo "Installed contents:"
+          find "$CLAUDE_SKILLS_DIR" -maxdepth 2
+
+      - name: Verify expected directories landed
+        if: matrix.scenario.expect_dirs
+        run: |
+          export CLAUDE_SKILLS_DIR="$RUNNER_TEMP/claude-skills"
+          for d in ${{ matrix.scenario.expect_dirs }}; do
+            if [ ! -d "$CLAUDE_SKILLS_DIR/$d" ]; then
+              echo "Missing expected directory: $d"
+              exit 1
+            fi
+          done
+
+      - name: Re-run installs cleanly (overwrite, not skip)
+        if: matrix.scenario.name == 'no-shared-dep'
+        run: |
+          export CLAUDE_SKILLS_DIR="$RUNNER_TEMP/claude-skills"
+          touch "$CLAUDE_SKILLS_DIR/rfc-review/MARKER"
+          bash install.sh --local-path . rfc-review
+          if [ -f "$CLAUDE_SKILLS_DIR/rfc-review/MARKER" ]; then
+            echo "Re-install did not overwrite existing skill directory"
+            exit 1
+          fi
+
+      - name: Unknown skill name exits non-zero
+        if: matrix.scenario.name == 'no-shared-dep'
+        run: |
+          export CLAUDE_SKILLS_DIR="$RUNNER_TEMP/claude-skills-unknown"
+          if bash install.sh --local-path . totally-not-a-skill; then
+            echo "Expected non-zero exit for an unknown skill name"
+            exit 1
+          fi

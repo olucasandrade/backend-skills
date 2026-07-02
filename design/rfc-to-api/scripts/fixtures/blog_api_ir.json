@@ -1,0 +1,201 @@
+{
+  "version": "1.0",
+  "entities_source": "schema.ir.json",
+  "operations": [
+    {
+      "name": "createPost",
+      "description": "Create a new blog post.",
+      "kind": "create",
+      "input": {
+        "fields": [
+          {
+            "name": "title",
+            "type": "string",
+            "max_length": 200,
+            "nullable": false
+          },
+          {
+            "name": "authorId",
+            "type": "ref",
+            "ref_entity": "User",
+            "nullable": false
+          }
+        ]
+      },
+      "output": {
+        "cardinality": "single",
+        "shape": {
+          "type": "ref",
+          "ref_entity": "Post"
+        }
+      },
+      "errors": [
+        {
+          "case": "validation_failed"
+        },
+        {
+          "case": "unauthorized"
+        }
+      ],
+      "requires_auth": true,
+      "required_scopes": [
+        "posts:write"
+      ],
+      "idempotent": false,
+      "paginated": false,
+      "pagination_style": null
+    },
+    {
+      "name": "listPosts",
+      "description": "List blog posts.",
+      "kind": "list",
+      "input": {
+        "fields": []
+      },
+      "output": {
+        "cardinality": "collection",
+        "shape": {
+          "type": "ref",
+          "ref_entity": "Post"
+        }
+      },
+      "errors": [],
+      "requires_auth": false,
+      "required_scopes": [],
+      "idempotent": true,
+      "paginated": true,
+      "pagination_style": "cursor"
+    },
+    {
+      "name": "getPost",
+      "description": "Get a single blog post by id.",
+      "kind": "read",
+      "input": {
+        "fields": []
+      },
+      "output": {
+        "cardinality": "single",
+        "shape": {
+          "type": "ref",
+          "ref_entity": "Post"
+        }
+      },
+      "errors": [
+        {
+          "case": "not_found"
+        }
+      ],
+      "requires_auth": false,
+      "required_scopes": [],
+      "idempotent": true,
+      "paginated": false,
+      "pagination_style": null,
+      "entity": "Post"
+    },
+    {
+      "name": "deletePost",
+      "description": "Delete a blog post.",
+      "kind": "delete",
+      "input": {
+        "fields": []
+      },
+      "output": {
+        "cardinality": "single",
+        "shape": {
+          "fields": []
+        }
+      },
+      "errors": [
+        {
+          "case": "not_found"
+        },
+        {
+          "case": "forbidden"
+        }
+      ],
+      "requires_auth": true,
+      "required_scopes": [
+        "posts:write"
+      ],
+      "idempotent": true,
+      "paginated": false,
+      "pagination_style": null,
+      "entity": "Post"
+    },
+    {
+      "name": "publishPost",
+      "description": "Publish a draft post, notifying subscribers.",
+      "kind": "action",
+      "input": {
+        "fields": []
+      },
+      "output": {
+        "cardinality": "single",
+        "shape": {
+          "type": "ref",
+          "ref_entity": "Post"
+        }
+      },
+      "errors": [
+        {
+          "case": "not_found"
+        },
+        {
+          "case": "conflict",
+          "description": "Post is already published"
+        },
+        {
+          "case": "insufficient_credits",
+          "status_hint": 402,
+          "description": "Author has no publishing credits left"
+        }
+      ],
+      "requires_auth": true,
+      "required_scopes": [
+        "posts:write"
+      ],
+      "idempotent": false,
+      "paginated": false,
+      "pagination_style": null,
+      "entity": "Post"
+    },
+    {
+      "name": "archiveOldPosts",
+      "description": "Batch-archive posts older than a threshold; not tied to a single entity path.",
+      "kind": "action",
+      "input": {
+        "fields": [
+          {
+            "name": "olderThanDays",
+            "type": "int",
+            "nullable": false
+          }
+        ]
+      },
+      "output": {
+        "cardinality": "single",
+        "shape": {
+          "fields": [
+            {
+              "name": "archivedCount",
+              "type": "int",
+              "nullable": false
+            }
+          ]
+        }
+      },
+      "errors": [],
+      "requires_auth": true,
+      "required_scopes": [
+        "admin"
+      ],
+      "idempotent": false,
+      "paginated": false,
+      "pagination_style": null,
+      "rest_override": {
+        "path": "/admin/posts/archive-old",
+        "verb": "POST"
+      }
+    }
+  ]
+}

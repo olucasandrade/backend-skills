@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "entities": [
+    {
+      "name": "User",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false},
+        {"name": "email", "type": "string", "max_length": 255, "nullable": false, "unique": true},
+        {"name": "role", "type": "enum", "values": ["admin", "member"], "nullable": false}
+      ]
+    },
+    {
+      "name": "Post",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false},
+        {"name": "title", "type": "string", "max_length": 200, "nullable": false},
+        {"name": "author_id", "type": "ref", "ref_entity": "User", "nullable": false}
+      ]
+    },
+    {
+      "name": "Tag",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false},
+        {"name": "name", "type": "string", "max_length": 50, "nullable": false, "unique": true}
+      ]
+    }
+  ],
+  "relationships": [
+    {"between": ["Post", "Tag"], "join_table": "post_tags"}
+  ]
+}

@@ -1,0 +1,11 @@
+Stakeholder brief: Patient Intake Form Redesign
+
+Our clinic's patient intake form is outdated and causes long wait times.
+We want a new digital intake form that patients fill out on a tablet in
+the waiting room before their appointment. It should collect the same
+information as the current paper form: name, date of birth, insurance
+info, current medications, and reason for visit.
+
+The clinic manager wants this live within two months, before flu season
+starts. Doctors have said the current form is fine content-wise, they
+just want it faster to fill out and easier to read on the doctor's side.

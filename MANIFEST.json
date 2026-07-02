@@ -1,0 +1,64 @@
+{
+  "skills": {
+    "log-triage": {
+      "path": "operations/log-triage",
+      "category": "operations",
+      "shared": ["operations/_shared/log-triage-core"]
+    },
+    "log-triage-interactive": {
+      "path": "operations/log-triage-interactive",
+      "category": "operations",
+      "shared": ["operations/_shared/log-triage-core"]
+    },
+    "incident-summary": {
+      "path": "operations/incident-summary",
+      "category": "operations",
+      "shared": ["operations/_shared/log-triage-core"]
+    },
+    "rfc-review": {
+      "path": "requirements/rfc-review",
+      "category": "requirements",
+      "shared": []
+    },
+    "requirement-gap-analysis": {
+      "path": "requirements/requirement-gap-analysis",
+      "category": "requirements",
+      "shared": []
+    },
+    "rfc-to-schema": {
+      "path": "design/rfc-to-schema",
+      "category": "design",
+      "shared": ["design/_shared"]
+    },
+    "rfc-to-api": {
+      "path": "design/rfc-to-api",
+      "category": "design",
+      "shared": ["design/_shared"]
+    },
+    "er-generator": {
+      "path": "design/er-generator",
+      "category": "design",
+      "shared": []
+    },
+    "security-review": {
+      "path": "implementation/security-review",
+      "category": "implementation",
+      "shared": ["implementation/_shared"]
+    },
+    "performance-review": {
+      "path": "implementation/performance-review",
+      "category": "implementation",
+      "shared": ["implementation/_shared"]
+    },
+    "architecture-review": {
+      "path": "implementation/architecture-review",
+      "category": "implementation",
+      "shared": ["implementation/_shared"]
+    },
+    "api-docs": {
+      "path": "implementation/api-docs",
+      "category": "implementation",
+      "shared": ["design/_shared"]
+    }
+  }
+}

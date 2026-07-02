@@ -1,0 +1,9 @@
+2026-06-01T09:00:00Z INFO app booted
+Jan  5 10:00:01 web01 sshd[1234]: Accepted publickey for deploy from 10.0.0.5 port 51322
+{"timestamp": "2026-06-01T09:01:00Z", "level": "ERROR", "msg": "database connection pool exhausted"}
+2026-06-01T09:01:05.000Z ERROR database connection pool exhausted
+Traceback (most recent call last):
+  File "/app/db.py", line 10, in connect
+    raise TimeoutError("pool exhausted")
+TimeoutError: pool exhausted
+{"timestamp": "2026-06-01T09:02:00Z", "level": "INFO", "msg": "health check ok"}

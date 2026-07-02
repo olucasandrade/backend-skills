@@ -1,0 +1,16 @@
+2026-06-01T12:00:00.123Z INFO Starting batch job "nightly-sync"
+2026-06-01T12:00:03.456Z ERROR Unhandled exception in worker
+Traceback (most recent call last):
+  File "/app/worker.py", line 88, in process
+    result = client.fetch(record_id)
+  File "/app/client.py", line 42, in fetch
+    raise ConnectionError("upstream refused connection")
+ConnectionError: upstream refused connection
+2026-06-01T12:00:04.001Z INFO Retrying job in 5s
+2026-06-01T12:00:09.500Z ERROR Unhandled exception in worker
+Traceback (most recent call last):
+  File "/app/worker.py", line 88, in process
+    result = client.fetch(record_id)
+  File "/app/client.py", line 42, in fetch
+    raise ConnectionError("upstream refused connection")
+ConnectionError: upstream refused connection

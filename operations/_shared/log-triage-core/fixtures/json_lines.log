@@ -1,0 +1,8 @@
+{"timestamp": "2026-06-01T10:00:00Z", "level": "INFO", "msg": "server started on port 8080"}
+{"timestamp": "2026-06-01T10:00:05Z", "level": "INFO", "msg": "health check ok"}
+{"timestamp": "2026-06-01T10:01:12Z", "level": "ERROR", "msg": "connection timeout to redis:6379"}
+{"timestamp": "2026-06-01T10:01:15Z", "level": "ERROR", "msg": "connection timeout to redis:6379"}
+{"timestamp": "2026-06-01T10:01:20Z", "level": "ERROR", "msg": "connection timeout to redis:6379"}
+{"timestamp": "2026-06-01T10:01:25Z", "level": "WARNING", "msg": "retrying redis connection, attempt 2"}
+{"timestamp": "2026-06-01T10:02:00Z", "level": "INFO", "msg": "health check ok"}
+{"timestamp": "2026-06-01T10:02:30Z", "level": "ERROR", "msg": "connection timeout to redis:6379"}

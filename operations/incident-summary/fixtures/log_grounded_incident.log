@@ -1,0 +1,10 @@
+2026-06-14T14:00:03Z INFO  api  deploy started: release v2.14.0
+2026-06-14T14:01:47Z INFO  api  deploy finished: release v2.14.0
+2026-06-14T14:02:11Z ERROR api  connection pool exhausted: db_primary (active=100 max=100)
+2026-06-14T14:02:15Z ERROR api  request failed: 503 Service Unavailable /checkout
+2026-06-14T14:02:16Z ERROR api  request failed: 503 Service Unavailable /checkout
+2026-06-14T14:02:20Z ERROR api  request failed: 503 Service Unavailable /cart
+2026-06-14T14:03:01Z WARN  api  db_primary connections still saturated
+2026-06-14T14:14:52Z INFO  api  rollback started: release v2.13.2
+2026-06-14T14:16:10Z INFO  api  rollback finished: release v2.13.2
+2026-06-14T14:16:40Z INFO  api  db_primary connections nominal

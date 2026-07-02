@@ -1,0 +1,6 @@
+Epic: Team Workspaces
+
+- Users can create a "workspace" and invite other users to it
+- Workspace members can share documents within the workspace
+- Workspace owner can remove members
+- Ship by end of Q3

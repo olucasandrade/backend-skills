@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "entities": [
+    {
+      "name": "User",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false},
+        {"name": "id", "type": "string", "nullable": false}
+      ]
+    },
+    {
+      "name": "Post",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false},
+        {"name": "author_id", "type": "ref", "ref_entity": "Nonexistent", "cardinality": "many_to_one", "nullable": false},
+        {"name": "status", "type": "enum", "nullable": false}
+      ]
+    }
+  ],
+  "relationships": []
+}

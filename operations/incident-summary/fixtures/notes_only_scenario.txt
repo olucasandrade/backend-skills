@@ -1,0 +1,11 @@
+Incident notes (from #incidents Slack channel, no useful log correlation
+— this service doesn't log request-level errors):
+
+- ~10:15am: support started getting tickets that the "export CSV" button
+  on the reports page does nothing when clicked
+- turned out the button called an endpoint that was silently removed in
+  last week's cleanup PR, no monitoring caught it because it's a
+  low-traffic feature
+- fixed by re-adding the endpoint (revert of the removal), deployed ~11:40am
+- about 12 customers filed tickets; unknown how many hit it silently and
+  didn't report it

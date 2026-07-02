@@ -1,0 +1,139 @@
+---
+name: architecture-review
+description: Review an existing codebase's architecture for structural health — layering violations, circular dependencies, coupling/cohesion problems, and deviation from a stated architecture pattern. Use when the user asks to review the architecture, check module boundaries, find circular dependencies, or audit structural health of a codebase.
+---
+
+# architecture-review
+
+Reviews an entire codebase (v1 scope — not a diff or PR review) for
+structural health, not code correctness or security/performance. Sibling
+to `implementation/security-review` and `implementation/performance-review`
+— same shape (real code as input, no proposal/doc to judge), reusing the
+same shared file-enumeration script, but a distinct lens.
+
+**Originally sketched under `requirements/`, moved here deliberately.**
+A sibling idea (`system-design-review`, reviewing multi-document proposals
+for a not-yet-built system) was considered and dropped — its distinction
+from `rfc-review` was too thin. This skill's input is the opposite of a
+proposal: **real, already-written code**, which puts it in the same
+category as `security-review`/`performance-review`, not `rfc-review`/
+`requirement-gap-analysis`.
+
+**Dependency:** uses `scripts/scan.py` (stdlib-only Python 3), which
+depends on `../_shared/file_enum.py` (same module `security-review` and
+`performance-review` use — this is the third consumer). If you copy this
+skill folder standalone, copy `scripts/` and `implementation/_shared/`
+alongside it.
+
+## Step 1 — Resolve the input
+
+Accept a directory path (the codebase root to review). If nothing is
+given, ask for one.
+
+If the user separately mentions a `schema.ir.json`/`api.ir.json`, note its
+path for Step 4. **Only use it if explicitly pointed at — never search
+the repo for it**, same convention as `security-review`/`performance-review`.
+
+## Step 2 — Run the structural pre-pass
+
+```bash
+python3 <skill_dir>/scripts/scan.py --root PATH
+```
+
+Unlike its two siblings, this pre-pass does real graph analysis, not just
+enumeration:
+- `files`/`skipped` — same filtered reading list as the other two skills.
+- `dependency_graph` — an in-repo import graph, **Python and JS/TS only
+  in v1** (regex-based import/require parsing; external package imports
+  are deliberately excluded — this graph is in-repo structure only).
+  Other languages are out of scope for this pass; still read those files
+  yourself in Step 3, just without a pre-built graph to lean on.
+- `cycles` — circular dependencies, **always high confidence**: either
+  the graph has a cycle or it doesn't, no judgment involved. Every
+  reported cycle is a real finding, never a candidate to second-guess.
+
+## Step 3 — Read the code
+
+For every file, look across four categories (skip one only if genuinely
+inapplicable, and say why):
+
+1. **Circular dependencies** — start from `cycles` directly; explain the
+   concrete risk of each (init-order bugs, forced tight coupling, harder
+   incremental compilation/testing) rather than just restating the cycle.
+2. **Layering violations** — a lower layer (data access, core domain
+   logic) importing from a higher one (HTTP handlers, presentation, UI) —
+   readable directly off `dependency_graph`'s edges once you know which
+   directories represent which layer from the codebase's own structure
+   (don't assume a layering scheme the codebase doesn't actually have).
+3. **Coupling/cohesion red flags** — a module with unusually high fan-in/
+   fan-out relative to the rest of the graph (a "god module" everything
+   depends on), or a module whose contents are visibly unrelated
+   (grab-bag `utils`/`helpers` files that have become load-bearing).
+4. **Architecture-pattern deviation** — **only if the codebase itself
+   declares a pattern** (a README/ADR stating "this follows hexagonal
+   architecture," "clean architecture," a documented layering scheme,
+   etc.). Flag concrete violations of that *stated* pattern only. **Never
+   invent an expected pattern the codebase never claimed to follow** —
+   that would be judging code against a standard nobody set.
+
+## Step 4 — Optional: cross-check against the RFC pipeline
+
+Only if explicitly pointed at `schema.ir.json`/`api.ir.json` in Step 1:
+check whether an operation/entity's declared domain (e.g. inferred from
+its name or grouping in the IR) matches where its implementation actually
+lives in the module structure — a `billing`-named operation whose handler
+imports mostly from a `notifications` module is real, checkable
+ownership drift. Report under an **RFC/implementation drift** section,
+same name/pattern as the other two `implementation/` skills.
+
+## Step 5 — Assemble findings
+
+Each finding: `files` (one or more), `category` (one of Step 3's four),
+`severity`, `confidence`, description, and a concrete suggested fix (name
+the actual mechanism: break the cycle by extracting a shared interface,
+move the violating import behind the intended boundary, split the god
+module along its actual responsibilities).
+
+**Severity** (maintainability/change-risk impact):
+- **Critical** — actively causing bugs or already blocking safe changes
+  (e.g. a cycle that's caused a real init-order bug, or forces awkward
+  workarounds already visible in the code).
+- **High** — will meaningfully slow down or risk-inflate near-future
+  changes if left alone.
+- **Medium** — a real structural smell, not urgent.
+- **Low** — minor/stylistic, worth a mention.
+
+**Confidence:**
+- Cycles from `scan.py`: always **High** — deterministic.
+- Layering/coupling/pattern-deviation judgment: the usual High/Medium/Low,
+  with a one-line false-positive note for anything below High (e.g., "this
+  reads as a layering violation, but verify this directory is actually
+  meant to be a separate layer and not just a naming convention").
+
+Never drop a finding for low confidence.
+
+## Step 6 — Write the report
+
+Write `ARCHITECTURE_REVIEW.md` next to the codebase root reviewed (or cwd
+if it has no clear parent), and show it inline — both. Structure:
+severity-tier summary line, findings grouped by severity, RFC/
+implementation drift section (if Step 4 ran), scan coverage (files
+reviewed vs. skipped, and which languages had a dependency graph built
+vs. which didn't). No single approve/reject verdict for a whole codebase
+— same posture as `security-review`/`performance-review`.
+
+Every invocation is a fresh review — no revision tracking in v1.
+
+## Things to not do
+
+- Don't invent an expected architecture pattern the codebase never
+  declared.
+- Don't build or claim a dependency graph for languages outside Python/
+  JS/TS — read those files directly instead, without a graph to lean on.
+- Don't count external package imports as part of the dependency graph —
+  in-repo structure only.
+- Don't search the repo for `schema.ir.json`/`api.ir.json` — only use
+  them if the user explicitly points you at one.
+- Don't drop findings for low confidence — flag with a false-positive
+  note instead.
+- Don't invent an overall approve/reject verdict for the codebase.

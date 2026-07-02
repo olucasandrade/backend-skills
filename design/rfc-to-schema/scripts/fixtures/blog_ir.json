@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "entities": [
+    {
+      "name": "User",
+      "description": "A registered account holder.",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false, "assumed": true, "assumed_reason": "not specified in RFC, standard primary key convention"},
+        {"name": "email", "type": "string", "max_length": 255, "nullable": false, "unique": true, "assumed": false},
+        {"name": "role", "type": "enum", "values": ["admin", "member"], "nullable": false, "assumed": false},
+        {"name": "created_at", "type": "datetime", "nullable": false, "default": "now()", "assumed": true, "assumed_reason": "standard audit field convention"}
+      ]
+    },
+    {
+      "name": "Post",
+      "description": "A blog post authored by a user.",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false, "assumed": true, "assumed_reason": "standard primary key convention"},
+        {"name": "title", "type": "string", "max_length": 200, "nullable": false, "assumed": false},
+        {"name": "author_id", "type": "ref", "ref_entity": "User", "cardinality": "many_to_one", "nullable": false, "assumed": false},
+        {"name": "tags", "type": "array", "item_type": "string", "nullable": true, "assumed": false},
+        {"name": "metadata", "type": "object", "nullable": true, "assumed": true, "assumed_reason": "RFC mentions extensible metadata but no fields specified", "fields": [
+          {"name": "source", "type": "string", "nullable": true}
+        ]}
+      ],
+      "unique_constraints": [["title", "author_id"]]
+    },
+    {
+      "name": "Tag",
+      "fields": [
+        {"name": "id", "type": "uuid", "primary_key": true, "nullable": false, "assumed": true, "assumed_reason": "standard primary key convention"},
+        {"name": "name", "type": "string", "max_length": 50, "nullable": false, "unique": true, "assumed": false}
+      ]
+    }
+  ],
+  "relationships": [
+    {"between": ["Post", "Tag"], "join_table": "post_tags"}
+  ]
+}

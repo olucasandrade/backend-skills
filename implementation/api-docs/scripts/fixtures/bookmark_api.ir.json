@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "entities_source": "schema.ir.json",
+  "operations": [
+    {
+      "name": "createBookmark",
+      "description": "Bookmark a post. Idempotent — bookmarking an already-bookmarked post is a no-op, not an error.",
+      "kind": "create",
+      "entity": "Bookmark",
+      "input": {"fields": [
+        {"name": "postId", "type": "ref", "ref_entity": "Post", "nullable": false}
+      ]},
+      "output": {"cardinality": "single", "shape": {"type": "ref", "ref_entity": "Bookmark"}},
+      "errors": [{"case": "not_found", "description": "Post does not exist"}],
+      "requires_auth": true,
+      "required_scopes": [],
+      "idempotent": true,
+      "paginated": false,
+      "pagination_style": null
+    },
+    {
+      "name": "listBookmarks",
+      "description": "List the current user's bookmarks, most recent first.",
+      "kind": "list",
+      "entity": "Bookmark",
+      "input": {"fields": []},
+      "output": {"cardinality": "collection", "shape": {"type": "ref", "ref_entity": "Bookmark"}},
+      "errors": [],
+      "requires_auth": true,
+      "required_scopes": ["bookmarks:read"],
+      "idempotent": true,
+      "paginated": true,
+      "pagination_style": "cursor"
+    },
+    {
+      "name": "deleteBookmark",
+      "description": "Remove a bookmark. Idempotent — removing a non-existent bookmark is a no-op.",
+      "kind": "delete",
+      "entity": "Bookmark",
+      "input": {"fields": []},
+      "output": {"cardinality": "single", "shape": {"fields": []}},
+      "errors": [],
+      "requires_auth": true,
+      "required_scopes": [],
+      "idempotent": true,
+      "paginated": false,
+      "pagination_style": null
+    }
+  ]
+}

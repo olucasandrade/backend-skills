@@ -1,0 +1,6 @@
+Jan  5 10:00:01 web01 sshd[1234]: Accepted publickey for deploy from 10.0.0.5 port 51322
+Jan  5 10:00:15 web01 kernel: WARNING: CPU throttling detected on core 3
+Jan  5 10:00:16 web01 kernel: WARNING: CPU throttling detected on core 3
+Jan  5 10:00:20 web01 systemd[1]: app.service: Main process exited, code=exited, status=1/FAILURE
+Jan  5 10:00:21 web01 systemd[1]: app.service: Failed with result 'exit-code'.
+Jan  5 10:00:45 web01 sshd[1234]: Accepted publickey for deploy from 10.0.0.5 port 51400

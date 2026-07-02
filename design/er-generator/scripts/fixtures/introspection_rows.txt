@@ -1,0 +1,5 @@
+users|id|uuid|NO|YES||
+users|email|varchar|NO|NO||
+posts|id|uuid|NO|YES||
+posts|title|varchar|NO|NO||
+posts|author_id|uuid|NO|NO|users|id
