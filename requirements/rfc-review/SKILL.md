@@ -96,6 +96,15 @@ piped/pasted), and show it inline — both, not one or the other.
 Every invocation is treated as a fresh review — this skill does not track
 prior reviews or diff against earlier versions of the same doc in v1.
 
+## Step 7 — Offer follow-ups
+
+After presenting the report, offer next steps via AskUserQuestion — e.g.
+"Draft concrete replacement text for each Blocking finding", "Produce a
+revised copy of the doc with Should-Fix suggestions applied (as a new file
+next to the original, never overwriting it)", "Explain a specific finding"
+— and accept free-form follow-ups. Never modify the original document in
+place.
+
 ## Rules
 
 - Don't force the RFC-review lens onto a document that clearly isn't a proposal without checking with the user first.

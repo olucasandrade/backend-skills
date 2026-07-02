@@ -42,6 +42,12 @@ binary, lockfile, and `.gitignore`-matched paths already excluded) and
 content-analysis heuristic pass** — a regex can't tell a 3-item config
 loop from an unbounded one. Read every file in `files` directly.
 
+**Scoping (large codebases only):** if `files` contains more than 150
+entries, ask one question via AskUserQuestion before reading — options:
+review everything (slower, complete), focus on a subtree the user names,
+or focus on request-handling/entry-point paths first. Skip this entirely
+below the threshold, or when the user's request already scoped the review.
+
 ## Step 3 — Read the code
 
 For every file in `files`, look for these five categories (skip one
@@ -143,6 +149,15 @@ summary is the top-line signal, same as `security-review`.
 Every invocation is treated as a fresh review — this skill does not
 track prior reviews or diff against an earlier scan in v1.
 
+## Step 7 — Offer follow-ups
+
+After presenting the report, offer concrete next steps via AskUserQuestion —
+e.g. "Explain finding N in more depth", "Draft a fix for the top finding",
+"Re-run scoped to <subtree>" — and also accept free-form follow-up
+questions. Only draft or apply code fixes when the user explicitly picks
+that option; never edit the reviewed codebase unprompted. When drafting a
+fix, show a diff and let the user decide whether to apply it.
+
 ## Rules
 
 - Don't claim measured latency/timing — every finding is inferred from
@@ -155,3 +170,5 @@ track prior reviews or diff against an earlier scan in v1.
   note instead.
 - Don't report N near-duplicate findings for one systemic pattern —
   merge into one finding listing every affected location.
+- Don't edit the reviewed codebase unless the user explicitly asks for a
+  fix to be applied.

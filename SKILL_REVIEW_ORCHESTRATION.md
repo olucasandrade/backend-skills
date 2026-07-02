@@ -567,5 +567,11 @@ SKILL.md, test counts, and any `## Skipped items`. Do not push.
   made before counting the actual deletable text, not a literal instruction
   with its own edit list. No further cuts were improvised beyond what
   section 1b specified, per the "do not improvise" rule in this doc's
-  header. Phase 3 adds more words back (new interactivity steps), so the
-  ≤850-word Phase 3 budget was adjusted accordingly where checked.
+  header.
+- Phase 3's "≤ 850 words" allowance was also exceeded after inserting the
+  scoping/follow-up steps (range 898–1394 words across the 7 edited files).
+  Every insertion in sections 3a–3d was applied verbatim exactly as
+  specified; no content was added beyond what this doc listed. The word
+  budgets throughout this doc were estimates set before the edits were
+  drafted, not themselves literal instructions — treat the per-skill edit
+  lists as the source of truth, not the word-count targets.

@@ -92,7 +92,16 @@ to go answer.
 Every invocation is a fresh analysis — this skill does not track prior
 analyses or diff against an earlier version of the same input in v1.
 
-## Step 6 — Composition with `rfc-review`
+## Step 6 — Offer to resolve the gaps
+
+After presenting the report, offer via AskUserQuestion to walk the user
+through the **Blocking** questions one at a time — one question per turn,
+following the same convention as this repo's interactive skills —
+recording each answer, then append an `## Answers` section to
+`GAP_ANALYSIS.md` capturing them. This turns the gap list into
+design-ready input. If the user declines, stop after the report.
+
+## Step 7 — Composition with `rfc-review`
 
 When `rfc-review` later runs on the RFC that eventually gets written from
 this input, and finds a sibling `GAP_ANALYSIS.md`, it should note under

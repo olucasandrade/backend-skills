@@ -110,6 +110,11 @@ Assumed details carry into rendered output: `x-assumed`/`x-assumed-reason`
 in OpenAPI schemas (same convention as `rfc-to-schema`'s JSON Schema
 output).
 
+If the target format is ambiguous (no existing convention detected in the
+repo and the user didn't state one), ask via AskUserQuestion — options
+matching the renderer's `--target` values plus "all" — instead of
+silently defaulting.
+
 ## Step 5 — Assemble the output
 
 Write next to the input file (cwd fallback only if the input has no

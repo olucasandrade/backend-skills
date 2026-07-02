@@ -38,6 +38,12 @@ enumeration:
   the graph has a cycle or it doesn't, no judgment involved. Every
   reported cycle is a real finding, never a candidate to second-guess.
 
+**Scoping (large codebases only):** if `files` contains more than 150
+entries, ask one question via AskUserQuestion before reading — options:
+review everything (slower, complete), focus on a subtree the user names,
+or focus on request-handling/entry-point paths first. Skip this entirely
+below the threshold, or when the user's request already scoped the review.
+
 ## Step 3 — Read the code
 
 For every file, look across four categories (skip one only if genuinely
@@ -110,6 +116,15 @@ vs. which didn't). No single approve/reject verdict for a whole codebase
 
 Every invocation is a fresh review — no revision tracking in v1.
 
+## Step 7 — Offer follow-ups
+
+After presenting the report, offer concrete next steps via AskUserQuestion —
+e.g. "Explain finding N in more depth", "Draft a fix for the top finding",
+"Re-run scoped to <subtree>" — and also accept free-form follow-up
+questions. Only draft or apply code fixes when the user explicitly picks
+that option; never edit the reviewed codebase unprompted. When drafting a
+fix, show a diff and let the user decide whether to apply it.
+
 ## Rules
 
 - Don't invent an expected architecture pattern the codebase never
@@ -122,3 +137,5 @@ Every invocation is a fresh review — no revision tracking in v1.
   them if the user explicitly points you at one.
 - Don't drop findings for low confidence — flag with a false-positive
   note instead.
+- Don't edit the reviewed codebase unless the user explicitly asks for a
+  fix to be applied.

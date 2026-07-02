@@ -109,6 +109,11 @@ directory), say so and note that a matching renderer isn't shipped yet in
 v1 — offer SQL DDL or JSON Schema as the closest available output rather
 than silently defaulting to one without explaining why.
 
+If the target format is ambiguous (no existing convention detected in the
+repo and the user didn't state one), ask via AskUserQuestion — options
+matching the renderer's `--target` values plus "all" — instead of
+silently defaulting.
+
 Assumed fields carry their flag into the rendered output too: a trailing
 `-- ASSUMED: <reason>` comment in SQL, an `"x-assumed": true` /
 `"x-assumed-reason"` pair in JSON Schema.
