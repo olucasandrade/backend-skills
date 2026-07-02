@@ -1,6 +1,6 @@
 # api-skills
 
-Claude Code skills covering the full backend engineering lifecycle — pre-design gap analysis, RFC review, schema/API generation, ER diagrams, security/performance/architecture review, API docs, log triage, incident postmortems. Eleven skills, stdlib-only Python, zero dependencies to install.
+Claude Code skills covering the full backend engineering lifecycle — pre-design gap analysis, RFC review, schema/API generation, ER diagrams, security/performance/architecture review, API docs, log triage, incident postmortems. Twelve skills, stdlib-only Python, zero dependencies to install.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/olucasandrade/backend-skills/main/install.sh | bash -s -- log-triage
