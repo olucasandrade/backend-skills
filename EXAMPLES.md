@@ -1,12 +1,39 @@
-# Edge cases, by skill — real prompts
+# Examples, by skill — real prompts
 
-Every skill's `SKILL.md` has a "Things to not do" list — this doc turns
-the non-obvious ones into literal prompts you could paste into Claude
-Code, the exact input, and the actual expected output, so the edge-case
-handling is checkable rather than just asserted. Organized in the same
-order as the pipelines in [`PIPELINES.md`](PIPELINES.md).
+Every skill below gets two kinds of example: **typical use** (the
+straightforward, common case — what most invocations actually look like)
+and **edge cases** (the non-obvious behaviors from each skill's "Things
+to not do" list, turned into literal prompts you could paste into Claude
+Code, exact input, and actual expected output, so the handling is
+checkable rather than just asserted). Organized in the same order as the
+pipelines in [`PIPELINES.md`](PIPELINES.md).
 
 ## `requirement-gap-analysis`
+
+**Typical use.**
+
+> Prompt: `what am I missing before I design this?` + pasted:
+> ```
+> Epic: Team Workspaces
+> - Users can create a "workspace" and invite other users to it
+> - Workspace members can share documents within the workspace
+> - Workspace owner can remove members
+> - Ship by end of Q3
+> ```
+
+Expected `GAP_ANALYSIS.md` excerpt:
+```
+## Functional
+- **Should-Fix**: What happens to a workspace's documents when the owner
+  removes a member who uploaded them — do they stay, get reassigned, or
+  get removed? Not stated.
+- **Should-Fix**: Can a workspace have more than one owner, or is
+  ownership transferable? Not stated, and it affects the data model.
+
+## Stakeholders
+- **Nice-to-Have**: Any limit on workspace size (member count, document
+  count)? Worth asking before this becomes a capacity/cost question later.
+```
 
 **Edge case: input is already a solution, not a pre-design brief.**
 
@@ -53,6 +80,26 @@ doc is missing standard sections," because bullet lists are a fully
 valid input shape here, not a defect to flag.
 
 ## `rfc-review`
+
+**Typical use.**
+
+> Prompt: `review this RFC` + pasting a well-structured bookmarks-feature
+> RFC (Summary, Goals, Design, Data Model, Rollout sections all present).
+
+Expected `RFC_REVIEW.md` excerpt:
+```
+## Verdict: Ready to Approve
+
+## Findings
+- **Nice-to-Have**: The idempotent-bookmarking requirement ("a user can
+  only bookmark a post once") implies a uniqueness constraint that's
+  stated in prose but not called out as an explicit data-model
+  requirement. Worth making explicit for whoever implements the schema.
+
+## Detected template and section map
+Template: RFC. All core sections present (Summary, Goals, Non-Goals,
+Design, Data Model, Rollout).
+```
 
 **Edge case: non-proposal doc.**
 
@@ -108,6 +155,22 @@ text directly, or export it to a markdown/text file?
 
 ## `rfc-to-schema`
 
+**Typical use.**
+
+> Prompt: `generate the schema for this RFC` on the same bookmarks RFC.
+
+Expected `schema.sql` excerpt:
+```sql
+CREATE TABLE bookmarks (
+  id UUID PRIMARY KEY,  -- ASSUMED: standard primary key convention
+  user_id UUID NOT NULL REFERENCES users(id),
+  post_id UUID NOT NULL REFERENCES posts(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()  -- ASSUMED: standard audit field
+);
+```
+Plus `SCHEMA_NOTES.md` listing every `ASSUMED` field and why, and
+`schema.ir.json` for downstream skills to consume.
+
 **Edge case: same RFC, re-run after a small edit.**
 
 > Prompt: `regenerate the schema, I fixed a typo in the RFC` — run inside
@@ -156,6 +219,22 @@ CREATE TABLE bookmarks (
 ```
 
 ## `rfc-to-api`
+
+**Typical use.**
+
+> Prompt: `generate the API for this RFC` — finds the sibling
+> `schema.ir.json` automatically and `$ref`s its entities.
+
+Expected `API_NOTES.md` excerpt:
+```
+Derived 3 operations from the RFC's described behavior:
+- createBookmark  → POST /bookmarks
+- listBookmarks   → GET /bookmarks (cursor-paginated)
+- deleteBookmark  → DELETE /bookmarks/{id}
+Request/response bodies $ref schema.ir.json's Bookmark/User/Post entities
+instead of re-guessing field shapes.
+```
+Plus `openapi.json` and `schema.graphql` rendered from the same IR.
 
 **Edge case: entity only reachable transitively.**
 
@@ -210,6 +289,26 @@ what HTTP status it should map to. I need a status_hint for this (e.g.
 
 ## `er-generator`
 
+**Typical use.**
+
+> Prompt: `diagram this schema` pointing at `schema.ir.json`.
+
+Expected `er_diagram.mmd` excerpt:
+```mermaid
+erDiagram
+    User ||--o{ Bookmark : "has"
+    Post ||--o{ Bookmark : "bookmarked by"
+    User {
+        uuid id PK
+        string email
+    }
+    Bookmark {
+        uuid id PK
+        uuid user_id FK
+        uuid post_id FK
+    }
+```
+
 **Edge case: SQL outside the documented subset.**
 
 > Prompt: `diagram this schema.sql` where the file contains:
@@ -253,6 +352,30 @@ static schema.sql file instead.
 ```
 
 ## `api-docs`
+
+**Typical use.**
+
+> Prompt: `document this API` pointing at `api.ir.json`.
+
+Expected `API_DOCS.md` excerpt:
+```
+### `createBookmark`
+
+`POST /bookmarks`
+
+Bookmark a post for the current user. Idempotent — bookmarking an
+already-bookmarked post is a no-op, not an error.
+
+**Auth required:** yes
+
+**Request fields**
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `postId` | ref(Post) | yes | The post to bookmark. |
+
+Example:
+{ "postId": "3fa85f64-5717-4562-b3fc-2c963f66afa6" }  _(example)_
+```
 
 **Edge case: no IR, no spec — only implemented code exists.**
 
@@ -300,6 +423,27 @@ on this operation — verify)_
 — while every other operation's heading has no such note.
 
 ## `security-review`
+
+**Typical use.**
+
+> Prompt: `review this codebase for security issues` pointing at a
+> directory with a genuine SQL-injection bug and a hardcoded AWS key.
+
+Expected `SECURITY_REVIEW.md` excerpt:
+```
+## Summary
+2 Critical, 0 High, 1 Medium, 0 Low
+
+### Critical — SQL injection (routes/search.py:12) — Confidence: High
+User-controlled `name` param is concatenated directly into a SQL string
+with no parameterization. Fix: use a parameterized query
+(`cur.execute("... WHERE name = ?", (name,))`).
+
+### Critical — Hardcoded AWS credentials (config.py:6) — Confidence: High
+AWS_ACCESS_KEY_ID matches a real key shape, committed directly in
+source. Move to environment variables or a secret manager; rotate this
+key, since it's now in git history.
+```
 
 **Edge case: secret that doesn't match a known shape.**
 
@@ -351,6 +495,19 @@ not 12 independent bugs. Fix the shared authorization helper once.
 
 ## `performance-review`
 
+**Typical use.**
+
+> Prompt: `review this for performance issues` on code that fetches a
+> post's author with a separate query per post inside a loop.
+
+Expected `PERFORMANCE_REVIEW.md` excerpt:
+```
+### High — N+1 query (services/posts.py:9) — Confidence: High
+`list_posts_with_authors` issues one query per post to fetch its author
+instead of a single batched query. Fix: `WHERE author_id IN (...)` or a
+JOIN, instead of one query per iteration.
+```
+
 **Edge case: nested loop over a small, fixed collection.**
 
 > Prompt: `review this for performance issues` on:
@@ -384,6 +541,26 @@ Expected `PERFORMANCE_REVIEW.md` excerpt:
 ```
 
 ## `architecture-review`
+
+**Typical use.**
+
+> Prompt: `review the architecture of this codebase` on a clean, layered
+> service with no cycles and no violations.
+
+Expected `ARCHITECTURE_REVIEW.md` excerpt:
+```
+## Summary
+0 Critical, 0 High, 0 Medium, 1 Low
+
+### Low — Wide fan-in module (utils/helpers.py) — Confidence: Medium
+23 of the codebase's 40 modules import from utils/helpers.py — not
+necessarily wrong, but worth checking whether some of these are
+genuinely unrelated responsibilities that grew into one shared file.
+
+## Scan coverage
+40 files reviewed, dependency graph built for all (Python). No cycles
+detected.
+```
 
 **Edge case: codebase declares no architecture pattern.**
 
@@ -426,6 +603,22 @@ extracting the shared logic both modules need into a third module.
 
 ## `log-triage` / `log-triage-interactive`
 
+**Typical use.**
+
+> Prompt: `triage these logs` + a file with a repeated `ConnectionError`
+> traceback and a couple of INFO lines mixed in.
+
+Expected inline report excerpt:
+```
+## Clusters (ranked by severity)
+
+1. ERROR — ConnectionError: upstream refused connection (2 occurrences)
+   First seen 12:00:03, last seen 12:00:09. Sample:
+   "raise ConnectionError('upstream refused connection')"
+   Suggested next step: check whether the upstream service was down or
+   rate-limiting during this window.
+```
+
 **Edge case: correlation vs. causation.**
 
 > Prompt: `triage these logs` on a file where a `payment-service ERROR`
@@ -459,6 +652,31 @@ recent 50,000 (tail-prioritized). Earlier entries were not analyzed.
 ```
 
 ## `incident-summary`
+
+**Typical use.**
+
+> Prompt: `help me write up this incident` pointing at
+> `log_grounded_incident.log` (a real deploy → connection-pool exhaustion
+> → rollback sequence with real timestamps).
+
+Expected interview opener, grounded in the actual log data:
+```
+Logs show deploy v2.14.0 finished at 14:01:47, then connection pool
+exhaustion errors started at 14:02:11 — is that when user-facing impact
+actually began, or was something noticeable before it hit the logs?
+```
+...then `INCIDENT_SUMMARY.md`:
+```
+## Severity
+SEV2 — significant degradation, checkout/cart endpoints returning 503s
+for ~13 minutes.
+
+## Timeline
+- 14:01:47 — Deploy v2.14.0 finished.
+- 14:02:11 — Database connection pool exhausted; 503s begin.
+- 14:14:52 — Rollback to v2.13.2 started.
+- 14:16:40 — Connections nominal again.
+```
 
 **Edge case: no logs at all.**
 
