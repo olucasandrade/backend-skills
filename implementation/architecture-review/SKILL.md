@@ -11,14 +11,6 @@ to `implementation/security-review` and `implementation/performance-review`
 — same shape (real code as input, no proposal/doc to judge), reusing the
 same shared file-enumeration script, but a distinct lens.
 
-**Originally sketched under `requirements/`, moved here deliberately.**
-A sibling idea (`system-design-review`, reviewing multi-document proposals
-for a not-yet-built system) was considered and dropped — its distinction
-from `rfc-review` was too thin. This skill's input is the opposite of a
-proposal: **real, already-written code**, which puts it in the same
-category as `security-review`/`performance-review`, not `rfc-review`/
-`requirement-gap-analysis`.
-
 **Dependency:** uses `scripts/scan.py` (stdlib-only Python 3), which
 depends on `../_shared/file_enum.py` (same module `security-review` and
 `performance-review` use — this is the third consumer). If you copy this

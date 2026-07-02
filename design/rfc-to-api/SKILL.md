@@ -142,7 +142,7 @@ Every run is independent — no revision-tracking in v1, consistent with
 
 - **`rfc-review`**: optional informational input (Step 1).
 - **`rfc-to-schema`**: optional informational input for entity `$ref`s (Step 1) — never required.
-- **`er-generator`** (planned): unrelated to this skill's output; it consumes `rfc-to-schema`'s IR or a live DB, not this skill's API IR.
+- **`er-generator`**: unrelated to this skill's output; it consumes `rfc-to-schema`'s IR or a live DB, not this skill's API IR.
 
 ## Things to not do
 

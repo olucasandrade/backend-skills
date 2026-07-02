@@ -11,11 +11,8 @@ cost/value, stakeholder impact, testability, and — since this repo's
 `design/` skills consume approved RFCs later — whether the doc has enough
 concrete detail to be mechanically turned into a schema/API spec.
 
-This skill does its own gap-analysis and architecture-fit checks internally;
-it does not delegate to the sibling `requirements/` skills
-(`requirement-gap-analysis`, `system-design-review`, `architecture-review`),
-which are scoped to different document types, not different lenses on this
-one.
+This skill does its own gap-analysis internally; it does not delegate to
+`requirement-gap-analysis`, which is scoped to pre-solution input, not RFCs.
 
 **Dependency:** uses the deterministic pre-pass script at
 `scripts/doc_prepass.py` (stdlib-only Python 3). If you copy this skill

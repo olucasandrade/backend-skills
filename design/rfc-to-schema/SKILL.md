@@ -148,12 +148,12 @@ against a previous `schema.ir.json` version in v1.
 ## Composition with other skills
 
 - **`rfc-review`**: optional, informational input (Step 1). Never required.
-- **`er-generator`** (✅ implemented): a general-purpose diagram skill that can
+- **`er-generator`**: a general-purpose diagram skill that can
   visualize either a live database *or* an IR produced here — `rfc-to-schema`
   owns "derive an implementable model," `er-generator` owns "diagram any
   model." No dependency in this direction; `er-generator` depends on this
   skill's IR format, not the other way around.
-- **`rfc-to-api`** (✅ implemented): can optionally consume `schema.ir.json` if
+- **`rfc-to-api`**: can optionally consume `schema.ir.json` if
   present next to its input, to ground request/response bodies in real
   entities — but doesn't require it (plenty of APIs don't need new storage).
 
