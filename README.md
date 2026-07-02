@@ -86,7 +86,7 @@ Every skill's deterministic layer ships with stdlib-only unit tests. CI (`.githu
 
 ## Contributing
 
-New skill ideas, bug reports, and PRs are welcome. Match the existing shape: a `SKILL.md` with clear steps, a thin stdlib-only `scripts/` layer where there's genuinely deterministic work to do, fixtures for manual QA (and real unit tests if there's a script), and an entry in `MANIFEST.json` if it should be installable.
+New skill ideas, bug reports, and PRs are welcome. Match the existing shape: a `SKILL.md` with clear steps, a thin stdlib-only `scripts/` layer where there's genuinely deterministic work to do, fixtures for manual QA (and real unit tests if there's a script), an `evals/evals.json` with 2–3 test cases, and an entry in `MANIFEST.json` if it should be installable.
 
 ## License
 

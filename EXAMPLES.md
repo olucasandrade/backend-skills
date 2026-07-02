@@ -35,6 +35,8 @@ Expected `GAP_ANALYSIS.md` excerpt:
   count)? Worth asking before this becomes a capacity/cost question later.
 ```
 
+Ends by offering to walk through the Blocking questions one at a time.
+
 **Edge case: input is already a solution, not a pre-design brief.**
 
 > Prompt: `Can you do a gap analysis on this doc?` (pasting a file that
@@ -100,6 +102,8 @@ Expected `RFC_REVIEW.md` excerpt:
 Template: RFC. All core sections present (Summary, Goals, Non-Goals,
 Design, Data Model, Rollout).
 ```
+
+Ends by offering follow-ups (explain a finding, draft a fix, re-scope).
 
 **Edge case: non-proposal doc.**
 
@@ -445,6 +449,8 @@ source. Move to environment variables or a secret manager; rotate this
 key, since it's now in git history.
 ```
 
+Ends by offering follow-ups (explain a finding, draft a fix, re-scope).
+
 **Edge case: secret that doesn't match a known shape.**
 
 > Prompt: `review this codebase for security issues` on a directory
@@ -508,6 +514,8 @@ instead of a single batched query. Fix: `WHERE author_id IN (...)` or a
 JOIN, instead of one query per iteration.
 ```
 
+Ends by offering follow-ups (explain a finding, draft a fix, re-scope).
+
 **Edge case: nested loop over a small, fixed collection.**
 
 > Prompt: `review this for performance issues` on:
@@ -561,6 +569,8 @@ genuinely unrelated responsibilities that grew into one shared file.
 40 files reviewed, dependency graph built for all (Python). No cycles
 detected.
 ```
+
+Ends by offering follow-ups (explain a finding, draft a fix, re-scope).
 
 **Edge case: codebase declares no architecture pattern.**
 
