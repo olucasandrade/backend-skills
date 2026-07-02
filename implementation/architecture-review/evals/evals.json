@@ -1,0 +1,27 @@
+{
+  "skill_name": "architecture-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "check for circular dependencies: implementation/architecture-review/scripts/fixtures/cyclic_sample",
+      "expected_output": "ARCHITECTURE_REVIEW.md written next to the codebase root and shown inline, reporting the a.py/b.py cycle as a high-confidence Circular dependencies finding with the concrete risk explained and a suggested fix (e.g. extracting a shared interface).",
+      "files": ["implementation/architecture-review/scripts/fixtures/cyclic_sample"],
+      "assertions": [
+        "ARCHITECTURE_REVIEW.md is written next to the codebase root and also shown inline",
+        "The cycle between pkg/a.py and pkg/b.py is reported with confidence High",
+        "The finding explains a concrete risk (e.g. init-order bugs, tight coupling), not just a restatement of the cycle"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "review the architecture: implementation/architecture-review/scripts/fixtures/layering_violation_sample",
+      "expected_output": "A structural review identifying the data-layer-importing-from-handlers layering violation, with severity/confidence and a suggested fix.",
+      "files": ["implementation/architecture-review/scripts/fixtures/layering_violation_sample"],
+      "assertions": [
+        "A layering violation finding referencing data/repository.py and handlers/http.py is present",
+        "No architecture pattern is invented for the codebase to be judged against unless the codebase itself declares one",
+        "Findings are grouped by severity with a scan-coverage section noting which languages had a dependency graph built"
+      ]
+    }
+  ]
+}

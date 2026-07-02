@@ -1,0 +1,27 @@
+{
+  "skill_name": "er-generator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "diagram this schema: design/er-generator/scripts/fixtures/blog_schema_ir.json",
+      "expected_output": "An er_diagram.mmd Mermaid erDiagram (or er_diagram_1.mmd/_2.mmd if clustering split it) written next to the input and shown inline in a mermaid fence, plus a short disclosure note naming the source used and entity/relationship counts.",
+      "files": ["design/er-generator/scripts/fixtures/blog_schema_ir.json"],
+      "assertions": [
+        "At least one .mmd file is written next to the input and shown inline in a mermaid code fence",
+        "The disclosure note states which source (schema.ir.json) was used",
+        "Every relationship line in the diagram references only entities actually declared in it"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "draw an ER diagram of this database: design/er-generator/scripts/fixtures/blog.sqlite",
+      "expected_output": "The skill introspects the SQLite file live via stdlib sqlite3, projects it into the internal ER shape, and renders the same Mermaid output as eval 1's schema-IR path, disclosing that a live SQLite file was the source.",
+      "files": ["design/er-generator/scripts/fixtures/blog.sqlite"],
+      "assertions": [
+        "The disclosure note states the source was a live SQLite file, not a schema IR",
+        "No live Postgres/MySQL connection is attempted since none was given",
+        "The rendered diagram is shown inline in a mermaid code fence"
+      ]
+    }
+  ]
+}

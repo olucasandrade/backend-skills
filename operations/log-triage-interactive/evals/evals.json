@@ -1,0 +1,26 @@
+{
+  "skill_name": "log-triage-interactive",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "something's wrong with the API, can you dig through these logs? operations/_shared/log-triage-core/fixtures/mixed.log",
+      "expected_output": "Because the input mixes multiple services/formats, the skill asks up to 3 clarifying questions via AskUserQuestion before producing a ranked TRIAGE_REPORT.md, then offers post-report drill-down.",
+      "files": ["operations/_shared/log-triage-core/fixtures/mixed.log"],
+      "assertions": [
+        "At most 3 clarifying questions are asked before the first report",
+        "The report structure matches log-triage's (executive summary, ranked clusters, frequency sketch, omitted-volume note, next steps)",
+        "After the report, the assistant offers drill-down options or accepts free-form follow-up questions"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "triage this: operations/_shared/log-triage-core/fixtures/stacktrace.log",
+      "expected_output": "Because the input is a single focused stack trace with no ambiguity signals, the skill skips clarifying questions entirely and goes straight to the report, identical in behavior to log-triage on the same input.",
+      "files": ["operations/_shared/log-triage-core/fixtures/stacktrace.log"],
+      "assertions": [
+        "No clarifying questions are asked",
+        "TRIAGE_REPORT.md is written and shown inline directly"
+      ]
+    }
+  ]
+}

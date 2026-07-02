@@ -1,0 +1,27 @@
+{
+  "skill_name": "api-docs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "document this API: implementation/api-docs/scripts/fixtures/bookmark_api.ir.json",
+      "expected_output": "API_DOCS.md written next to the IR file and shown inline: a one-paragraph overview, then one section per operation in IR order with a resolved REST path/verb, an auth/scopes/idempotency/pagination summary line, filled request/response field tables, an error table, and synthesized examples marked _(example)_.",
+      "files": ["implementation/api-docs/scripts/fixtures/bookmark_api.ir.json"],
+      "assertions": [
+        "API_DOCS.md is written next to the IR file and also shown inline",
+        "No <DESCRIPTION:...> or <EXAMPLE:...> placeholder remains unfilled in the final doc",
+        "Every synthesized request/response body example is marked _(example)_",
+        "Operations appear in the same order as the source IR, not reordered by name"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "generate API reference docs for this: implementation/api-docs/scripts/fixtures/bookmark_api.ir.json",
+      "expected_output": "The same API_DOCS.md structure as eval 1, generated directly from the IR path (Step 2's render_docs.py pre-pass) rather than falling back to reading source code, since a structured IR is available.",
+      "files": ["implementation/api-docs/scripts/fixtures/bookmark_api.ir.json"],
+      "assertions": [
+        "The IR path is used, not the source-code reverse-engineering fallback",
+        "The createBookmark operation's idempotent behavior is explained in plain language, not just restated as a checkbox"
+      ]
+    }
+  ]
+}

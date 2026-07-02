@@ -1,0 +1,28 @@
+{
+  "skill_name": "security-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "review this codebase for security issues: implementation/security-review/scripts/fixtures/vulnerable_samples",
+      "expected_output": "SECURITY_REVIEW.md written next to the codebase root and shown inline: a severity-tier summary line, findings grouped by severity each with category/confidence/description/suggested fix, a scan-coverage section, and recommended follow-ups. Ends by offering follow-ups (explain a finding, draft a fix, re-scope).",
+      "files": ["implementation/security-review/scripts/fixtures/vulnerable_samples"],
+      "assertions": [
+        "SECURITY_REVIEW.md is written next to the codebase root and also shown inline",
+        "The SQL injection in sqli.py is reported with a severity and confidence tier and a concrete suggested fix (e.g. parameterized query)",
+        "No unredacted secret value appears anywhere in the report",
+        "The assistant offers follow-ups after the report rather than ending abruptly"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "is this code safe? implementation/security-review/scripts/fixtures/vulnerable_samples",
+      "expected_output": "The same style of full security review as eval 1, additionally surfacing the path traversal in path_traversal.py as its own finding.",
+      "files": ["implementation/security-review/scripts/fixtures/vulnerable_samples"],
+      "assertions": [
+        "A path traversal finding referencing path_traversal.py is present in the report",
+        "Findings are grouped by severity with Critical first",
+        "No finding is dropped purely for low confidence; low/medium-confidence findings carry a false-positive note instead"
+      ]
+    }
+  ]
+}

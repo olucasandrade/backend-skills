@@ -1,0 +1,26 @@
+{
+  "skill_name": "rfc-to-schema",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "generate the schema for this RFC: requirements/rfc-review/scripts/fixtures/well_structured_rfc.md",
+      "expected_output": "schema.ir.json, a rendered schema.sql (or json-schema, or both), and SCHEMA_NOTES.md written next to the RFC and shown inline. Because the RFC is light on DB-level field detail, most fields are marked assumed:true with a stated reason, and if entities genuinely can't be identified the skill says so rather than inventing a model.",
+      "files": ["requirements/rfc-review/scripts/fixtures/well_structured_rfc.md"],
+      "assertions": [
+        "schema.ir.json, a rendered target file, and SCHEMA_NOTES.md are all written next to the RFC and shown inline",
+        "Fields not explicitly stated in the RFC are marked assumed: true with an assumed_reason, both in the IR and in the rendered output",
+        "The IR uses only the abstract type system, no target-specific syntax like VARCHAR or Prisma types"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "derive the data model from this ADR: requirements/rfc-review/scripts/fixtures/adr_style.md",
+      "expected_output": "A schema.ir.json describing an Event entity with a JSONB-style payload field, rendered to SQL DDL by default (Postgres-flavored) unless the user is asked to choose a target because none was detectable.",
+      "files": ["requirements/rfc-review/scripts/fixtures/adr_style.md"],
+      "assertions": [
+        "An Event entity (or equivalently named) with a payload field is present in the IR",
+        "If the target format was ambiguous, the skill asks via AskUserQuestion instead of silently defaulting"
+      ]
+    }
+  ]
+}

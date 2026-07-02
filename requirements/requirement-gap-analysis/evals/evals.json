@@ -1,0 +1,29 @@
+{
+  "skill_name": "requirement-gap-analysis",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "what am I missing before I design this? requirements/requirement-gap-analysis/fixtures/two_sentence_feature_request.txt",
+      "expected_output": "GAP_ANALYSIS.md written next to the input and shown inline: findings grouped by category (functional, non-functional, edge cases, stakeholders, data, compliance), each as a specific question to ask with no confidence score and no overall verdict. Ends by offering to walk through the Blocking questions one at a time.",
+      "files": ["requirements/requirement-gap-analysis/fixtures/two_sentence_feature_request.txt"],
+      "assertions": [
+        "GAP_ANALYSIS.md is written next to the input and also shown inline",
+        "Findings are grouped by category and each is phrased as a specific question, not a vague 'X is missing' statement",
+        "No confidence score is attached to any finding",
+        "No overall approve/reject verdict is given",
+        "The assistant offers to walk through Blocking questions one at a time after the report"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "what should I ask before we build this? requirements/requirement-gap-analysis/fixtures/stakeholder_brief_missing_compliance.txt",
+      "expected_output": "A gap analysis that surfaces the compliance/regulatory gap the brief's title implies, alongside the other standard categories, each tagged with a severity tier reusing rfc-review's Blocking/Should-Fix/Nice-to-Have/Question scale.",
+      "files": ["requirements/requirement-gap-analysis/fixtures/stakeholder_brief_missing_compliance.txt"],
+      "assertions": [
+        "A Compliance/regulatory finding is present given the fixture's missing-compliance framing",
+        "Each finding is tagged with one of Blocking/Should-Fix/Nice-to-Have/Question",
+        "No compliance concern is invented beyond what's inferable from the input's actual domain"
+      ]
+    }
+  ]
+}

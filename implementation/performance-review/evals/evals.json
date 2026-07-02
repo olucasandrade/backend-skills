@@ -1,0 +1,28 @@
+{
+  "skill_name": "performance-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "review this for performance issues: implementation/performance-review/scripts/fixtures/inefficient_samples",
+      "expected_output": "PERFORMANCE_REVIEW.md written next to the codebase root and shown inline: a severity-tier summary, findings grouped by severity with category/confidence/description/suggested fix, scan coverage, and an out-of-scope note about static-only analysis. Ends by offering follow-ups.",
+      "files": ["implementation/performance-review/scripts/fixtures/inefficient_samples"],
+      "assertions": [
+        "PERFORMANCE_REVIEW.md is written next to the codebase root and also shown inline",
+        "The N+1 pattern in n_plus_one.py is reported with a concrete suggested fix (e.g. batch via WHERE id IN (...))",
+        "No finding claims measured latency/timing, only inferred impact from reading the code",
+        "The assistant offers follow-ups after the report"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "why would this be slow at scale? implementation/performance-review/scripts/fixtures/inefficient_samples",
+      "expected_output": "The same review style as eval 1, additionally surfacing the per-request client construction in client_churn.py as a connection/client-churn finding.",
+      "files": ["implementation/performance-review/scripts/fixtures/inefficient_samples"],
+      "assertions": [
+        "A connection/client-churn finding referencing client_churn.py is present",
+        "Findings are grouped by severity, Critical first",
+        "No near-duplicate findings are reported for the same systemic pattern across multiple locations"
+      ]
+    }
+  ]
+}

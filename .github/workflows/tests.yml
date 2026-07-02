@@ -85,6 +85,36 @@ jobs:
           print(f\"OK: all paths for {len(data['skills'])} skills exist.\")
           "
 
+  evals-consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Every evals.json is well-formed and its file references exist
+        run: |
+          python3 - <<'EOF'
+          import json, os, sys
+          bad = []
+          for root, dirs, files in os.walk('.'):
+              if 'evals.json' in files:
+                  p = os.path.join(root, 'evals.json')
+                  try:
+                      data = json.load(open(p))
+                      assert 'skill_name' in data and isinstance(data['evals'], list) and data['evals']
+                      for e in data['evals']:
+                          for f in e.get('files', []):
+                              assert os.path.exists(f), f'{p}: missing file {f}'
+                  except Exception as ex:
+                      bad.append(f'{p}: {ex}')
+          if bad:
+              print('\n'.join(bad)); sys.exit(1)
+          print('all evals.json valid')
+          EOF
+
   install-script:
     runs-on: ubuntu-latest
     strategy:

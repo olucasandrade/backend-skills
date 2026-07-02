@@ -1,0 +1,26 @@
+{
+  "skill_name": "rfc-to-api",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "generate the API for this RFC: requirements/rfc-review/scripts/fixtures/well_structured_rfc.md",
+      "expected_output": "api.ir.json plus openapi.json and/or schema.graphql and API_NOTES.md written next to the RFC and shown inline. Since the RFC describes rate-limit response behavior (HTTP 429 with Retry-After) rather than new CRUD operations, the skill either models it as an explicit operation/error case or says plainly that no concrete API surface could be derived, rather than inventing endpoints.",
+      "files": ["requirements/rfc-review/scripts/fixtures/well_structured_rfc.md"],
+      "assertions": [
+        "api.ir.json, at least one rendered target, and API_NOTES.md are all written next to the RFC and shown inline",
+        "No auth scopes/roles are invented since the RFC never states any",
+        "If operations can't be concretely identified, the skill says so rather than fabricating an API surface"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "give me the OpenAPI spec for this proposal: requirements/rfc-review/scripts/fixtures/adr_style.md",
+      "expected_output": "Because this ADR describes a storage decision, not API behavior, the skill either derives a thin plausible API for the described entity or explains clearly why there isn't enough API-shaped detail to derive one — never inventing an API surface with no grounding.",
+      "files": ["requirements/rfc-review/scripts/fixtures/adr_style.md"],
+      "assertions": [
+        "The skill does not invent operations the source document gives no basis for",
+        "If it does propose operations, every operation's kind is one of create/read/list/update/delete/action, not an HTTP verb"
+      ]
+    }
+  ]
+}

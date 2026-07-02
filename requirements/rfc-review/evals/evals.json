@@ -1,0 +1,29 @@
+{
+  "skill_name": "rfc-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "review this RFC: requirements/rfc-review/scripts/fixtures/well_structured_rfc.md",
+      "expected_output": "RFC_REVIEW.md written next to the RFC and shown inline: an overall verdict (Not Ready / Ready with Revisions / Ready to Approve), findings tagged Blocking/Should-Fix/Nice-to-Have/Question each with a concrete suggested fix, the detected template and section map, and a note that the two referenced diagrams weren't analyzed. Ends by offering follow-ups (draft replacement text, produce a revised copy, explain a finding).",
+      "files": ["requirements/rfc-review/scripts/fixtures/well_structured_rfc.md"],
+      "assertions": [
+        "RFC_REVIEW.md is written next to the input file and also shown inline",
+        "An overall verdict is stated as one of Not Ready / Ready with Revisions / Ready to Approve",
+        "The two embedded diagram references are flagged as not analyzed",
+        "The open Redis fail-open/fail-closed question is raised as a Risk or Blocking finding",
+        "The assistant offers follow-ups after the report rather than ending abruptly"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "is this ready to approve? requirements/rfc-review/scripts/fixtures/adr_style.md",
+      "expected_output": "A review of the ADR treating it as a decision record rather than a full RFC, applying only the dimensions genuinely relevant to an ADR of this size, with an explicit overall verdict.",
+      "files": ["requirements/rfc-review/scripts/fixtures/adr_style.md"],
+      "assertions": [
+        "The detected template is reported as adr, not rfc or prfaq",
+        "Dimensions that don't apply to a short ADR are explicitly skipped with a stated reason rather than forced",
+        "An overall verdict is given"
+      ]
+    }
+  ]
+}

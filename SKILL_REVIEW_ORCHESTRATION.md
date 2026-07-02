@@ -575,3 +575,15 @@ SKILL.md, test counts, and any `## Skipped items`. Do not push.
   budgets throughout this doc were estimates set before the edits were
   drafted, not themselves literal instructions — treat the per-skill edit
   lists as the source of truth, not the word-count targets.
+- Phase 5's fixture table pointed `rfc-to-schema` and `rfc-to-api` at
+  fixtures in their own `scripts/fixtures/` directories, but those
+  directories only contain IR-JSON fixtures for testing the renderer
+  (`blog_ir.json`, `invalid_ir.json`, `blog_schema_ir.json`) — not RFC
+  prose, which is what these skills' eval prompts ("generate the schema/
+  API for this RFC") actually need as input. Per this doc's own fallback
+  rule ("pick the closest file... note it in Skipped items"), both
+  skills' `evals.json` reference `requirements/rfc-review/scripts/
+  fixtures/well_structured_rfc.md` and `.../adr_style.md` instead — real
+  RFC/ADR-shaped documents from a sibling skill's fixtures, which is what
+  a user would actually hand these skills. All referenced paths exist and
+  pass the evals-consistency check.

@@ -1,0 +1,28 @@
+{
+  "skill_name": "log-triage",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "triage these logs: operations/_shared/log-triage-core/fixtures/mixed.log",
+      "expected_output": "A TRIAGE_REPORT.md written next to the log file and shown inline: an executive summary, a severity-ranked list of clusters each with a plain-English label, layered explanation, and count/first-seen/last-seen, a frequency sketch where timestamps parsed, an omitted-volume note, and suggested next steps for the top clusters.",
+      "files": ["operations/_shared/log-triage-core/fixtures/mixed.log"],
+      "assertions": [
+        "TRIAGE_REPORT.md is written next to mixed.log and also shown inline",
+        "Clusters are ranked by severity, most severe first",
+        "Each cluster has a plain-English label, not the raw log template",
+        "Any correlation between clusters is described as a possible trigger, never stated as a direct cause"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "why is this crashing? operations/_shared/log-triage-core/fixtures/stacktrace.log",
+      "expected_output": "A one-shot ranked report focused on the crash's dominant cluster, written to TRIAGE_REPORT.md and shown inline, without asking any clarifying questions.",
+      "files": ["operations/_shared/log-triage-core/fixtures/stacktrace.log"],
+      "assertions": [
+        "No clarifying questions are asked before the report (log-triage is always one-shot)",
+        "The top-ranked cluster corresponds to the stack trace's exception",
+        "Report is written to TRIAGE_REPORT.md and shown inline"
+      ]
+    }
+  ]
+}

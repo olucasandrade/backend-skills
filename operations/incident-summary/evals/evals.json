@@ -1,0 +1,28 @@
+{
+  "skill_name": "incident-summary",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "help me write up this incident: operations/incident-summary/fixtures/log_grounded_incident.log",
+      "expected_output": "The skill runs the shared triage engine to ground a timeline skeleton from real timestamps, then interviews the user one question at a time about true start time, blast radius, trigger vs. root cause, resolution (fix vs. mitigation), and action items, finally writing INCIDENT_SUMMARY.md with a SEV tier, timeline, impact, trigger, root cause, resolution, and tagged action items.",
+      "files": ["operations/incident-summary/fixtures/log_grounded_incident.log"],
+      "assertions": [
+        "The timeline is grounded in real timestamps extracted from the log file where available",
+        "Questions are asked one at a time, not as a single bulk form",
+        "The report explicitly tags the resolution as either a fix or a mitigation",
+        "Action items are each tagged as preventing recurrence or improving detection/response"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "help me write up this incident, I only have some notes: operations/incident-summary/fixtures/notes_only_scenario.txt",
+      "expected_output": "With no log file given, the skill works entirely from the human notes, extracting any concrete facts already stated before interviewing for the rest, and still produces a full INCIDENT_SUMMARY.md with an approximate (not fabricated) timeline where exact times aren't known.",
+      "files": ["operations/incident-summary/fixtures/notes_only_scenario.txt"],
+      "assertions": [
+        "The skill does not require or ask for a log file",
+        "Timestamps not grounded in a real source are marked approximate, not stated as exact",
+        "SEV tier is asked directly rather than inferred from anything"
+      ]
+    }
+  ]
+}
