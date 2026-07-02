@@ -70,6 +70,12 @@ network/file I/O anywhere in the codebase):
 5. **Redundant work** — re-parsing/re-serializing/re-computing the same
    data on every loop iteration when it could be hoisted out and computed
    once.
+6. **Missing caching** — the same expensive read (config fetch, remote
+   lookup, heavy computation) repeated per-request or per-iteration with
+   no memoization or cache layer, where the value is obviously reusable.
+7. **Connection/client churn** — creating a new DB connection, HTTP
+   client, or session object per request/iteration instead of reusing a
+   pooled/module-level one.
 
 **Codebase-wide patterns matter more than isolated lines** — if the same
 inefficiency recurs across many call sites (e.g. the same N+1 pattern in
@@ -97,7 +103,7 @@ available, not because every finding of this kind implies one.
 
 ## Step 5 — Assemble findings
 
-Each finding needs: `file`, `line`(s), `category` (one of Step 3's five),
+Each finding needs: `file`, `line`(s), `category` (one of Step 3's seven),
 `severity`, `confidence`, a description, and a concrete suggested fix
 (name the actual mechanism: batch via `WHERE id IN (...)`, add a `LIMIT`/
 cursor, hoist the parse out of the loop, use an async HTTP client — not

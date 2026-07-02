@@ -29,11 +29,12 @@ python3 <skill_dir>/scripts/scan.py --root PATH
 Unlike its two siblings, this pre-pass does real graph analysis, not just
 enumeration:
 - `files`/`skipped` — same filtered reading list as the other two skills.
-- `dependency_graph` — an in-repo import graph, **Python and JS/TS only
-  in v1** (regex-based import/require parsing; external package imports
-  are deliberately excluded — this graph is in-repo structure only).
-  Other languages are out of scope for this pass; still read those files
-  yourself in Step 3, just without a pre-built graph to lean on.
+- `dependency_graph` — an in-repo import graph, **Python, JS/TS, and Go**
+  (regex-based import/require parsing; external package imports are
+  deliberately excluded — this graph is in-repo structure only). Go edges
+  are package-directory-level (from `go.mod`'s module path), not
+  file-level. Other languages are out of scope for this pass; still read
+  those files yourself in Step 3, just without a pre-built graph to lean on.
 - `cycles` — circular dependencies, **always high confidence**: either
   the graph has a cycle or it doesn't, no judgment involved. Every
   reported cycle is a real finding, never a candidate to second-guess.
@@ -130,7 +131,7 @@ fix, show a diff and let the user decide whether to apply it.
 - Don't invent an expected architecture pattern the codebase never
   declared.
 - Don't build or claim a dependency graph for languages outside Python/
-  JS/TS — read those files directly instead, without a graph to lean on.
+  JS/TS/Go — read those files directly instead, without a graph to lean on.
 - Don't count external package imports as part of the dependency graph —
   in-repo structure only.
 - Don't search the repo for `schema.ir.json`/`api.ir.json` — only use

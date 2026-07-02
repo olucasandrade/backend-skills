@@ -86,6 +86,15 @@ truly inapplicable to this codebase — e.g. no crypto usage anywhere):
    of `secrets`/`crypto.randomBytes` for tokens/keys).
 7. **Hardcoded secrets** — beyond what `secrets_findings` already caught;
    see Step 2's note.
+8. **Path traversal** — user-influenced file paths reaching filesystem
+   reads/writes without normalization + containment checks (`../` escapes,
+   absolute-path injection, zip-slip in archive extraction).
+9. **Mass assignment** — request bodies bound directly onto models/entities
+   without an allowlist of settable fields (e.g. a user setting `is_admin`
+   or `role` via a profile-update endpoint).
+10. **CSRF** — state-changing endpoints relying on cookie auth with no CSRF
+    token or SameSite protection. Skip (and say so) for pure token-in-header
+    APIs, where CSRF doesn't apply.
 
 **Codebase-wide patterns matter more than isolated lines** — if the same
 sanitization gap or missing authz check recurs across many handlers, say
@@ -106,7 +115,7 @@ not because every finding of this kind implies one.
 
 ## Step 5 — Assemble findings
 
-Each finding needs: `file`, `line`(s), `category` (one of Step 3's seven,
+Each finding needs: `file`, `line`(s), `category` (one of Step 3's ten,
 or `secret`), `severity`, `confidence`, a description of the issue, and a
 concrete suggested fix (not just "sanitize this input" — name the
 actual mechanism: parameterized query, `textContent` instead of

@@ -108,5 +108,48 @@ class TestCycleDetection(TempRepoTestCase):
         self.assertEqual(set(cycles[0]), {"a.py", "b.py"})
 
 
+FIXTURES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "fixtures")
+
+
+class TestGoImportGraph(TempRepoTestCase):
+    def test_go_module_path_parsed(self):
+        self.write("go.mod", "module example.com/app\n\ngo 1.21\n")
+        module_path, gomod_dir = scan.find_go_module(self.root)
+        self.assertEqual(module_path, "example.com/app")
+        self.assertEqual(gomod_dir, self.root)
+
+    def test_go_import_block_and_single(self):
+        block_content = (
+            "package a\n\n"
+            'import (\n\t"fmt"\n\talias "example.com/app/b"\n)\n'
+        )
+        self.assertIn("example.com/app/b", scan.extract_go_imports(block_content))
+        self.assertIn("fmt", scan.extract_go_imports(block_content))
+
+        single_content = 'package a\n\nimport "example.com/app/b"\n'
+        self.assertIn("example.com/app/b", scan.extract_go_imports(single_content))
+
+    def test_go_cycle_detected(self):
+        root = os.path.join(FIXTURES_DIR, "go_cycle_sample")
+        files, _ = scan.enumerate_files(root, [])
+        graph = scan.build_dependency_graph(root, files)
+        cycles = scan.find_cycles(graph)
+        self.assertEqual(len(cycles), 1)
+        self.assertEqual(set(cycles[0]), {"a", "b"})
+
+    def test_go_external_imports_excluded(self):
+        self.write("go.mod", "module example.com/app\n\ngo 1.21\n")
+        self.write("a/a.go", 'package a\n\nimport (\n\t"fmt"\n\t"github.com/other/dep"\n)\n')
+        files, _ = scan.enumerate_files(self.root, [])
+        graph = scan.build_dependency_graph(self.root, files)
+        self.assertEqual(graph["a"], [])
+
+    def test_no_gomod_skips_go(self):
+        self.write("a/a.go", 'package a\n\nimport "example.com/app/b"\n')
+        files, _ = scan.enumerate_files(self.root, [])
+        graph = scan.build_dependency_graph(self.root, files)
+        self.assertNotIn("a", graph)
+
+
 if __name__ == "__main__":
     unittest.main()
