@@ -1,6 +1,6 @@
 ---
 name: architecture-review
-description: Review an existing codebase's architecture for structural health — layering violations, circular dependencies, coupling/cohesion problems, and deviation from a stated architecture pattern. Use when the user asks to review the architecture, check module boundaries, find circular dependencies, or audit structural health of a codebase.
+description: Review an existing codebase's architecture for structural health — layering violations, circular dependencies, coupling/cohesion problems, and deviation from a stated architecture pattern. Use whenever the user asks to review architecture, check module boundaries or dependencies, find circular imports, assess tech debt or code structure, or asks "is this codebase well structured" — even without the word "architecture".
 ---
 
 # architecture-review

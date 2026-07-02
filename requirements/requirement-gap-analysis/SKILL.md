@@ -1,6 +1,6 @@
 ---
 name: requirement-gap-analysis
-description: Interrogate a pre-design requirements doc, stakeholder brief, epic, or freeform notes for missing information — before any solution has been proposed. Use when the user asks what's missing from a requirements doc, wants help scoping a feature before writing an RFC, or asks "what should I ask before we design this."
+description: Interrogate a pre-design requirements doc, stakeholder brief, epic, or freeform notes for missing information — before any solution has been proposed. Use whenever the user asks what's missing from requirements, wants help scoping a feature before writing an RFC or design doc, shares a rough feature idea and asks what to consider, or asks "what should I ask before we design/build this".
 ---
 
 # requirement-gap-analysis

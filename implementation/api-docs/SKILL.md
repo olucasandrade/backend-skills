@@ -1,6 +1,6 @@
 ---
 name: api-docs
-description: Generate human-readable API reference documentation (Markdown) from an rfc-to-api IR, an existing OpenAPI/GraphQL spec, or (as a fallback) implemented route/handler source code. Use when the user asks to document an API, generate API reference docs, or write endpoint documentation.
+description: Generate human-readable API reference documentation (Markdown) from an rfc-to-api IR, an existing OpenAPI/GraphQL spec, or (as a fallback) implemented route/handler source code. Use whenever the user asks to document an API or endpoints, generate API reference docs or a README for an API, or write developer-facing docs for a service.
 ---
 
 # api-docs

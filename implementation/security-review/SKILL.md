@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Review a codebase for security vulnerabilities — injection, broken access control, XSS, SSRF, insecure deserialization, crypto misuse, and hardcoded secrets — like a senior security engineer's audit pass. Use when the user asks to review code for security issues, audit a codebase, or check for vulnerabilities.
+description: Review a codebase for security vulnerabilities — injection, broken access control, XSS, SSRF, path traversal, CSRF, mass assignment, insecure deserialization, crypto misuse, and hardcoded secrets — like a senior security engineer's audit pass. Use whenever the user asks to review or audit code for security, asks "is this code safe", mentions OWASP, pentest prep, or vulnerabilities, or asks to check for leaked secrets/credentials — even if they don't say "security review" explicitly.
 ---
 
 # security-review

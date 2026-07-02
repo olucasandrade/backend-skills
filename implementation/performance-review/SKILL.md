@@ -1,6 +1,6 @@
 ---
 name: performance-review
-description: Review a codebase for performance issues — N+1 queries, algorithmic complexity problems, unbounded reads, blocking I/O in hot/async paths, and redundant work — like a senior engineer's performance audit. Use when the user asks to review code for performance, find slow paths, or audit for scalability issues.
+description: Review a codebase for performance issues — N+1 queries, algorithmic complexity, unbounded reads, blocking I/O in hot/async paths, missing caching, connection-pool misuse, and redundant work — like a senior engineer's performance audit. Use whenever the user asks why code is slow, whether it will scale, to find bottlenecks or hot paths, or to review/audit for performance or scalability — even without the word "review".
 ---
 
 # performance-review
