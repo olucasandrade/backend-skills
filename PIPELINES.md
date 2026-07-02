@@ -1,4 +1,4 @@
-# Pipelines: composing this repo's 11 skills across the engineering lifecycle
+# Pipelines: composing this repo's 12 skills across the engineering lifecycle
 
 This repo's skills aren't one pipeline — they're building blocks for
 **several**, depending on where you are in a feature's life: before a
@@ -54,10 +54,13 @@ requirements/requirement-gap-analysis → requirements/rfc-review → design/rfc
 - **`rfc-review`** catches gaps/ambiguity/risk in a proposal before anyone
   builds off it — the cheapest place to fix a mistake.
 - **`rfc-to-schema`** turns the RFC's data-model prose into an implementable
-  draft schema (SQL DDL / JSON Schema), flagging every inferred detail.
+  draft schema (SQL DDL / JSON Schema), flagging every inferred detail. If
+  no target format is stated and none is detectable from the repo, it asks
+  which to render instead of silently defaulting.
 - **`rfc-to-api`** does the same for behavior (OpenAPI / GraphQL SDL),
   optionally grounding request/response bodies in `rfc-to-schema`'s output
-  instead of re-guessing field shapes.
+  instead of re-guessing field shapes — same ask-don't-default rule for an
+  ambiguous target.
 - **`er-generator`** produces a Mermaid diagram to sanity-check the result —
   from the pipeline's own output, or from a live/static schema with no
   relation to any RFC at all.
@@ -71,14 +74,30 @@ requirements/requirement-gap-analysis → requirements/rfc-review → design/rfc
   `security-review`, declared pagination and schema indexing signals for
   `performance-review`, operation-to-module ownership for
   `architecture-review`). `architecture-review` additionally runs a real
-  dependency-graph/cycle-detection pass — the only genuinely deterministic
-  finding category among the three `implementation/` code-reading skills.
+  dependency-graph/cycle-detection pass (Python, JS/TS, and Go) — the only
+  genuinely deterministic finding category among the three
+  `implementation/` code-reading skills. On a codebase over 150 files, all
+  three ask once whether to scope the review before reading, instead of
+  reading everything unasked.
 - **`log-triage`/`log-triage-interactive`** diagnose "what's wrong right
   now" from live logs; **`incident-summary`** documents "what already
   happened" afterward, as a postmortem — reusing the same
   `log-triage-core` engine for grounding, but organized around chronology
   and narrative causality instead of ranked error clusters. Optionally
   references an `implementation/` finding that turned into the incident.
+
+**Every report-producing skill offers a next step instead of just
+stopping.** `rfc-review`, `requirement-gap-analysis`,
+`security-review`, `performance-review`, and `architecture-review` all end
+their report by asking whether you want a finding explained further, a fix
+drafted (as a diff, never applied without confirmation), or the doc/scope
+narrowed and re-run — the same "explicit choice over silent default"
+convention this repo applies everywhere. `requirement-gap-analysis`
+specifically offers to walk its **Blocking** questions one at a time and
+fold the answers back into `GAP_ANALYSIS.md`, turning it into design-ready
+input without a second invocation. None of this is required to move to the
+next pipeline stage — it's there for the common case where you want to act
+on a finding immediately instead of leaving the session and coming back.
 
 The composition is **loose by design**: every cross-skill link is
 optional. Each skill is independently useful; a pipeline only pays off
